@@ -1,0 +1,4 @@
+# PRE-RELEASE SAFETY GATE — do not remove without launch authorization.
+User-agent: *
+Disallow: /
+Sitemap: https://asphalt-calculator.example/sitemap.xml
