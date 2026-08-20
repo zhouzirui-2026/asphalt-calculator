@@ -13,9 +13,10 @@ below are explicit post-launch improvements, not claims that were completed.
   if the default changes.
 - [ ] Post-launch: obtain an independent qualified human review of construction
   wording and legal policies; do not add an invented credential or endorsement.
-- [ ] Post-launch: add a real monitored correction/contact method only after its
-  personal-information and delivery process is documented. No contact method is
-  claimed or exposed at launch.
+- [x] Post-launch: add the monitored `support@asphalt-calculator.top` correction
+  alias only after its forwarding path and personal-information handling are
+  documented in the privacy policy. The site has no contact form or outbound
+  mail service.
 
 ## Index safety gate
 

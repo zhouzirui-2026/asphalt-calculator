@@ -10,9 +10,11 @@ Status: GitHub and Vercel launch candidate
 
 The first release is a static-first, login-free planning tool. It performs all
 calculations in the browser and sends no project inputs to a server. It does not
-include accounts, payments, email, a remote database, contractor lead capture,
-advertising, or paid APIs. Optional GA4 is isolated behind explicit consent and
-receives page paths without calculator share-link queries.
+include accounts, payments, a contact form, outbound email, a remote database,
+contractor lead capture, advertising, or paid APIs. A public inbound support
+alias is isolated from calculator inputs and forwards to a monitored mailbox.
+Optional GA4 is isolated behind explicit consent and receives page paths without
+calculator share-link queries.
 
 The UI renders meaningful explanatory HTML on the server. Interactive fields use
 small client components backed by pure functions in `lib/calculations.ts`.

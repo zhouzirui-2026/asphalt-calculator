@@ -192,6 +192,7 @@ try {
     assert.ok(metaContent(html, "twitter:description"), `${path} needs twitter:description`);
     assert.equal(metaContent(html, "twitter:image"), `${SITE_ORIGIN}/og.png`, `${path} twitter:image mismatch`);
     assert.doesNotMatch(html, /googletagmanager\.com\/gtag/i, `${path} must not server-render Google Analytics before consent`);
+    assert.match(html, /href=["']mailto:support@asphalt-calculator\.top["']/i, `${path} needs the monitored support alias in the shared footer`);
     assert.ok(!titles.has(title), `${path} title duplicates another route`);
     assert.ok(!descriptions.has(description), `${path} description duplicates another route`);
     assert.ok(!h1s.has(h1[0]), `${path} H1 duplicates another route`);
@@ -228,6 +229,12 @@ try {
   const palletLinks = [...homeHtml.matchAll(/<a\b[^>]*href=["']https:\/\/pallet-calculator\.com\/["'][^>]*>/gi)];
   assert.equal(palletLinks.length, 1, "Homepage must contain exactly one crawlable Pallet Calculator link");
   assert.match(homeHtml, /Another tool we maintain/i, "Owned-site relationship must be visible beside the reciprocal link");
+
+  const privacyHtml = pages.get("/privacy");
+  assert.ok(privacyHtml, "Privacy HTML must be available for support-email audit");
+  assert.match(privacyHtml, /Cloudflare Email Routing/i, "Privacy policy must disclose the inbound email processor");
+  assert.match(privacyHtml, /monitored Google mailbox/i, "Privacy policy must disclose the forwarding destination category");
+  assert.match(privacyHtml, /calculator never emails your measurements/i, "Privacy policy must separate calculator inputs from support email");
 
   for (const [path, count] of inbound) assert.ok(count > 0, `${path} is an orphan route`);
 } finally {

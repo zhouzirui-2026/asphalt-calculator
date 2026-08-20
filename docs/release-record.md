@@ -107,6 +107,16 @@ This release does not send email, submit Search Console/Bing/Yandex/IndexNow,
 submit directories or backlinks, modify unrelated domains, or deploy purchased
 vendor code.
 
+## Post-launch inbound support route
+
+On 20 August 2026, the user separately authorized
+`support@asphalt-calculator.top` as a public correction/support alias. Cloudflare
+Email Routing forwards inbound messages to a verified monitored destination.
+The destination address is deliberately kept out of the public repository. The
+site has no contact form or outbound email service, and calculator values are
+never sent to the support route automatically. The privacy policy documents the
+voluntary-email boundary before the alias is exposed on the site.
+
 ## Rollback
 
 - Application rollback: restore the previous Ready Vercel production deployment
