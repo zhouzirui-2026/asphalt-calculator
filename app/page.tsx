@@ -106,6 +106,18 @@ export default function Home() {
               </Link>
             </article>
           </div>
+
+          <aside className="related-tool-note" aria-labelledby="related-tool-title">
+            <div>
+              <p className="eyebrow">Another tool we maintain</p>
+              <h3 id="related-tool-title">Planning a packaged load or shipment?</h3>
+            </div>
+            <p>
+              <a href="https://pallet-calculator.com/">Pallet Calculator</a>{" "}
+              helps compare pallet layouts, load dimensions, weight, and container
+              floor capacity with visible assumptions.
+            </p>
+          </aside>
         </section>
 
         <section className="trust-band">

@@ -223,6 +223,12 @@ try {
     }
   }
 
+  const homeHtml = pages.get("/");
+  assert.ok(homeHtml, "Homepage HTML must be available for reciprocal-link audit");
+  const palletLinks = [...homeHtml.matchAll(/<a\b[^>]*href=["']https:\/\/pallet-calculator\.com\/["'][^>]*>/gi)];
+  assert.equal(palletLinks.length, 1, "Homepage must contain exactly one crawlable Pallet Calculator link");
+  assert.match(homeHtml, /Another tool we maintain/i, "Owned-site relationship must be visible beside the reciprocal link");
+
   for (const [path, count] of inbound) assert.ok(count > 0, `${path} is an orphan route`);
 } finally {
   await stopProductionServer(server.child);
