@@ -96,6 +96,11 @@ environments, the consent UI and Google tag now activate only when the browser's
 exact HTTPS origin is the canonical production origin. It is accepted only if
 CI, Preview, merge, and the post-merge production crawl all pass.
 
+The post-merge sitemap crawl also detected that the homepage `<loc>` used the
+equivalent but non-identical trailing-slash form while its canonical omitted the
+slash. A final focused release aligns the root sitemap URL to the exact canonical
+and makes the local audit compare complete sitemap URLs, not only pathnames.
+
 ## Excluded external actions
 
 This release does not send email, submit Search Console/Bing/Yandex/IndexNow,

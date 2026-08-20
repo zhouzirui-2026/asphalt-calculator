@@ -26,7 +26,7 @@ const sitemapEntries = ROUTES
   .filter((route) => route.indexableAtLaunch)
   .map((route) => [
     "  <url>",
-    `    <loc>${SITE_ORIGIN}${route.path}</loc>`,
+    `    <loc>${route.path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`}</loc>`,
     `    <changefreq>${route.changefreq}</changefreq>`,
     `    <priority>${route.priority}</priority>`,
     "  </url>",
