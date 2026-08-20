@@ -1,20 +1,23 @@
 # Architecture and product decisions
 
-Date: 2026-08-18
+Date: 2026-08-20
 
 Owner: Asphalt Calculator Editorial Team
 
-Status: implementation decision for the local first release
+Status: GitHub and Vercel launch candidate
 
 ## Product boundary
 
 The first release is a static-first, login-free planning tool. It performs all
 calculations in the browser and sends no project inputs to a server. It does not
-include accounts, payments, email, a remote database, analytics, contractor lead
-capture, or paid APIs.
+include accounts, payments, email, a remote database, contractor lead capture,
+advertising, or paid APIs. Optional GA4 is isolated behind explicit consent and
+receives page paths without calculator share-link queries.
 
 The UI renders meaningful explanatory HTML on the server. Interactive fields use
 small client components backed by pure functions in `lib/calculations.ts`.
+Native Next.js is the build system; all product routes prerender to static HTML
+and Vercel serves them from its CDN without an application data layer.
 
 ## ShipAny Two decision
 
@@ -65,8 +68,10 @@ the first release has no product need that justifies the extra boundary.
 | `/privacy` | Understand local processing and data practices | Legal/support | Noindex |
 | `/terms` | Understand estimate and liability limits | Legal/support | Noindex |
 
-All routes remain `noindex, nofollow` during this local task. `robots.txt`
-disallows all crawling. Releasing the safety gate is a separate launch action.
+All routes remain `noindex, nofollow` for the first production candidate and
+`robots.txt` disallows crawling. The public routes switch to index/follow only
+after the custom domain, HTTPS, canonical redirect, production routes, and
+analytics consent behavior pass online verification.
 
 ## Calculation authority
 
@@ -90,6 +95,7 @@ conditions, or a national price.
 
 ## Rollback
 
-The starter-only baseline is commit `7b72f7e` on `main`. All product work is on
-`agent/initial-build`. Rolling back the task means abandoning that branch; no
-other workspace or vendor repository needs to change.
+The starter-only baseline is commit `7b72f7e`; the reviewed local product is
+commit `2a52067`. Launch changes are isolated on `agent/launch-asphalt-top`.
+Vercel rollback uses the previous production deployment; Git rollback uses the
+previous commit. No other workspace or vendor repository needs to change.

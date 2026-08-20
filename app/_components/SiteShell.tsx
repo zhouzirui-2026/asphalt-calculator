@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { AnalyticsPreferencesButton } from "./AnalyticsPreferencesButton";
 
 const navigation = [
   ["/asphalt-calculator", "Material calculator"],
@@ -54,6 +55,7 @@ export function SiteShell({
             <Link href="/methodology">Methodology</Link>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
+            <AnalyticsPreferencesButton />
           </nav>
           <p className="site-footer__notice">
             Estimates are for planning only. Confirm requirements and prices

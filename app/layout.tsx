@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { SITE_ORIGIN } from "../site-config.mjs";
+import { SITE_INDEXING_ENABLED, SITE_ORIGIN } from "../site-config.mjs";
+import { AnalyticsConsent } from "./_components/AnalyticsConsent";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
   },
   description:
     "Plan asphalt material and driveway costs with editable assumptions, visible formulas, and US or metric units.",
-  robots: { index: false, follow: false },
+  robots: { index: SITE_INDEXING_ENABLED, follow: SITE_INDEXING_ENABLED },
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({
@@ -20,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <AnalyticsConsent measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      </body>
     </html>
   );
 }

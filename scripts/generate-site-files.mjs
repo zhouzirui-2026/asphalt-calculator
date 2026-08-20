@@ -1,18 +1,26 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { ROUTES, SITE_ORIGIN } from "../site-config.mjs";
+import { ROUTES, SITE_INDEXING_ENABLED, SITE_ORIGIN } from "../site-config.mjs";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const checkOnly = process.argv.includes("--check");
 
-const robots = [
-  "# PRE-RELEASE SAFETY GATE — do not remove without launch authorization.",
-  "User-agent: *",
-  "Disallow: /",
-  `Sitemap: ${SITE_ORIGIN}/sitemap.xml`,
-  "",
-].join("\n");
+const robots = SITE_INDEXING_ENABLED
+  ? [
+      "# Production crawling policy.",
+      "User-agent: *",
+      "Allow: /",
+      `Sitemap: ${SITE_ORIGIN}/sitemap.xml`,
+      "",
+    ].join("\n")
+  : [
+      "# PRE-RELEASE SAFETY GATE — keep until the custom domain is verified.",
+      "User-agent: *",
+      "Disallow: /",
+      `Sitemap: ${SITE_ORIGIN}/sitemap.xml`,
+      "",
+    ].join("\n");
 
 const sitemapEntries = ROUTES
   .filter((route) => route.indexableAtLaunch)

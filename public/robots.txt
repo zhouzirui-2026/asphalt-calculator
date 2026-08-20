@@ -1,4 +1,4 @@
-# PRE-RELEASE SAFETY GATE — do not remove without launch authorization.
+# PRE-RELEASE SAFETY GATE — keep until the custom domain is verified.
 User-agent: *
 Disallow: /
-Sitemap: https://asphalt-calculator.example/sitemap.xml
+Sitemap: https://asphalt-calculator.top/sitemap.xml

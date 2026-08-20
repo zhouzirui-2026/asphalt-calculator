@@ -1,6 +1,6 @@
 # Independent review record
 
-Reviewed: 2026-08-18
+Reviewed: 2026-08-20
 
 Reviewer mode: separate read-only agent, `gpt-5.6-sol`, xhigh reasoning
 
@@ -39,8 +39,6 @@ reported relative error was `8.21e-16`.
 
 - Cross-browser coverage is Chromium-only; Safari and Firefox remain launch
   checks.
-- The framework supplies a correct generic 404, but a branded 404 is deferred.
+- A branded 404 is now included and covered by the production HTTP audit.
 - The 2.7 MB social card should be evaluated or losslessly compressed before
   launch if target-platform performance warrants it.
-- The canonical origin is deliberately a reserved `.example` placeholder and
-  all discovery remains blocked until an explicitly authorized launch task.

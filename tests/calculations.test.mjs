@@ -12,6 +12,11 @@ import {
   validateDrivewayCostInput,
   validateMaterialInput,
 } from "../lib/calculations.ts";
+import {
+  analyticsPageLocation,
+  isGoogleAnalyticsCookieName,
+  isValidGaMeasurementId,
+} from "../lib/analytics.ts";
 
 const usInput = {
   unitSystem: "us",
@@ -24,6 +29,25 @@ const usInput = {
   wastePercent: 5,
   unitPrice: 100,
 };
+
+test("analytics accepts GA4 IDs and strips share-link query values", () => {
+  assert.equal(isValidGaMeasurementId("G-ABC123XYZ"), true);
+  assert.equal(isValidGaMeasurementId("UA-123-1"), false);
+  assert.equal(isValidGaMeasurementId("G-ABC123;alert(1)"), false);
+  assert.equal(
+    analyticsPageLocation(
+      "https://asphalt-calculator.top",
+      "/asphalt-calculator?l=20&w=10&p=100#results",
+    ),
+    "https://asphalt-calculator.top/asphalt-calculator",
+  );
+  for (const name of ["_ga", "_ga_ABC123", "_gid", "_gat", "_gat_gtag_G_ABC", "_gac_UA_1"]) {
+    assert.equal(isGoogleAnalyticsCookieName(name), true, `${name} should be removable`);
+  }
+  for (const name of ["session", "asphalt-analytics-consent", "ga", "_other"]) {
+    assert.equal(isGoogleAnalyticsCookieName(name), false, `${name} must be preserved`);
+  }
+});
 
 test("parses only decimal strings accepted by number inputs", () => {
   assert.equal(parseDecimalInput("12.5"), 12.5);

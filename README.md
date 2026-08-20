@@ -1,12 +1,13 @@
 # Asphalt Calculator
 
 An English-first, US-market planning site for asphalt material and driveway
-cost allowances. It is responsive, accessible, login-free, static-first, and
-keeps all calculator inputs in the browser.
+cost allowances. It is responsive, accessible, login-free, and static-first.
+All seven routes are prerendered as HTML; calculator logic runs in the browser.
 
-Status: local pre-release. The repository deliberately ships `noindex,
-nofollow` on every route and `Disallow: /` in `robots.txt`. Do not remove the
-safety gate without a separately authorized launch.
+Status: authorized launch candidate for `https://asphalt-calculator.top`. The
+repository deliberately keeps `noindex, nofollow` and `Disallow: /` until the
+custom domain, HTTPS, canonical redirect, routes, and consent behavior have
+been verified on Vercel.
 
 ## Routes
 
@@ -33,6 +34,18 @@ npm run dev
 ```
 
 The local URL is normally `http://localhost:3000`.
+
+The production build uses native Next.js, but every product route is statically
+prerendered. No application API, database, account system, or Vercel Function is
+required for normal requests.
+
+## Analytics configuration
+
+Set `NEXT_PUBLIC_GA_MEASUREMENT_ID` to the GA4 web stream ID in Vercel. The ID is
+public configuration, not a secret. If it is absent or invalid, no consent
+banner or Google script is emitted. If configured, Google Analytics loads only
+after the visitor selects **Allow analytics**. Page locations are sent without
+query strings so share-link dimensions and prices remain local.
 
 ## Validation
 
@@ -63,7 +76,7 @@ deployable-build secret/private-source boundary.
 
 ## Privacy and scope
 
-There are no accounts, analytics, advertising scripts, payments, email forms,
-remote databases, or paid APIs. Share links contain only the visible calculator
-inputs. Results are mathematical planning estimates, not pavement designs,
+There are no accounts, advertising scripts, payments, email forms, remote
+databases, or paid APIs. Optional GA4 is consent-gated and excludes share-link
+queries. Results are mathematical planning estimates, not pavement designs,
 specifications, purchase orders, professional advice, or contractor quotes.

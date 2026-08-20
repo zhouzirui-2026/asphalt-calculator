@@ -1,17 +1,18 @@
-# Local implementation handoff
+# Launch handoff
 
-Updated: 2026-08-18
+Updated: 2026-08-20
 
-Branch: `agent/initial-build`
+Branch: `agent/launch-asphalt-top`
 
 Baseline: `7b72f7e` on local `main`
 
 ## Current state
 
-The first local release is implemented as a vinext/Vite static-first site using
-the Sites-compatible Cloudflare Worker build. There is no persistence or remote
-application capability. Calculators run in client components while all
-explanatory and SEO content is server-rendered.
+The launch candidate is a native Next.js 16 static-first site targeting
+`https://asphalt-calculator.top`. Every product route is prerendered; calculator
+inputs, unit conversion, cost estimates, sharing, and printing run in the
+browser. The product has no accounts, remote database, payment, email, or
+private vendor dependency.
 
 Implemented routes:
 
@@ -23,47 +24,62 @@ Implemented routes:
 - `/privacy`
 - `/terms`
 
-Generated public files are limited to `robots.txt`, `sitemap.xml`, and the
-site-specific `og.png` social card. Every route is pre-release `noindex,
-nofollow`; robots disallows all crawling.
+The launch uses GitHub for public source and Vercel for builds and hosting.
+`SITE_INDEXING_ENABLED` remains `false` until the custom domain, HTTPS,
+canonical host, all routes, security headers, calculator flows, and optional
+analytics consent behavior pass on production.
 
-## Verification completed
+## Analytics boundary
 
-- Formula/unit/cost/parsing/validation test suite: 13 passing.
-- Generated-file sync, ESLint, and TypeScript: passing.
-- Production build: passing with vinext/Vite.
-- Post-build SEO/site audit: passing for all 7 routes, including strict public
-  path allowlisting and secret/private-source scanning across the full `dist`.
-- Production local HTTP: 7 planned HTML routes, robots, and sitemap returned
-  200; an unknown route returned 404.
-- Browser desktop: homepage, material workflow, cost workflow, valid result,
-  invalid-input summary/focus, US→metric conversion, and share URL checked.
-- Browser mobile at 390×844: no horizontal overflow; full material flow and
-  content stack visually checked.
-- Browser console: no errors on a fresh production-browser session.
-- Browser regression checks cover strict share-parameter parsing, metric
-  overflow rejection, stale-estimate unit labels, accessible input-unit names,
-  skip-link focus transfer, and visible two-color focus rings.
-- Independent review found no remaining P0 or P1 after the reported issues were
-  corrected. See `docs/review.md`.
-- Dependency audit: 0 vulnerabilities.
+GA4 is configured only through `NEXT_PUBLIC_GA_MEASUREMENT_ID`. No Google tag is
+rendered or requested until a visitor explicitly allows analytics. Page
+locations exclude query strings and fragments so calculator/share parameters
+are not sent. Declining or withdrawing consent removes matching GA cookies and
+preserves unrelated cookies. The analytics preferences control is omitted when
+no valid GA4 Measurement ID is configured.
 
-## Known non-blocking risks
+Measurement IDs are public site identifiers, but login sessions, API tokens,
+cookies, analytics exports, and credentials must never be committed.
 
-- The canonical origin is a reserved `.example` placeholder and must change
-  before any preview intended for discovery or production.
-- Cost completeness is only as good as user-entered scope; the UI and content
-  state this repeatedly.
-- A custom not-found page is not part of the first route matrix; the framework
-  returns a correct 404. Consider a branded 404 at launch.
-- Browser validation covered Chromium automation, not Safari or Firefox.
-- The social card is visually verified and text-correct but is 2.7 MB; it is not
-  loaded in normal page rendering and is a launch-time optimization candidate.
-- The Sites-compatible vinext runtime remains on a beta release and reports
-  route classification as unknown during build; rendered-route and production
-  HTTP audits compensate locally, but framework upgrades need regression tests.
+## Local verification
 
-## Next authorized action
+Run from a clean checkout:
 
-No deployment or publication is authorized. Follow `docs/launch-checklist.md`
-only in a future task with explicit permission.
+```powershell
+npm ci
+npm run check
+npm test
+npm run build
+npm run audit:site
+npm audit
+git diff --check
+```
+
+The site audit starts the production Next.js server and verifies the seven
+allowlisted routes, metadata, canonical URLs, noindex/index policy, FAQ visible
+text versus JSON-LD, sitemap and robots output, internal links, 404 behavior,
+canonical-host redirect, security headers, public-file allowlist, and secret
+boundary across `.next`.
+
+## Release sequence
+
+1. Push this branch to the public GitHub repository and create a draft PR.
+2. Deploy a Vercel Preview with indexing disabled and verify desktop/mobile.
+3. Configure the site-specific GA4 stream and Vercel public environment value.
+4. Merge the verified candidate, add the apex and `www` domains, then apply only
+   Vercel's exact DNS records at the authoritative DNS provider.
+5. Verify production HTTPS, redirects, metadata, routes, calculators, consent,
+   and rollback evidence while indexing is still disabled.
+6. Enable indexing in a separate reviewed commit, rebuild, deploy, and verify
+   `robots.txt`, sitemap, page robots metadata, and canonicals.
+
+Do not submit Search Console, Bing Webmaster Tools, IndexNow, directories,
+backlinks, email, or other external forms as part of this release.
+
+## Remaining non-blocking risk
+
+- Automated browser coverage is Chromium-first; Safari and Firefox remain a
+  follow-up compatibility check.
+- Cost estimates depend on user-entered local rates and scope; the product does
+  not present them as contractor quotes.
+- The social card is larger than ideal but is not part of normal page rendering.

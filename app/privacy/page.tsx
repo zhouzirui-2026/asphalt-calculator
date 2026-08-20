@@ -5,8 +5,9 @@ import { SiteShell } from "../_components/SiteShell";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How this local-first asphalt calculator handles inputs, share links, printing, logs, cookies, analytics, and personal information.",
+  description: "How this asphalt calculator handles inputs, share links, hosting logs, optional Google Analytics, cookies, and personal information.",
   alternates: { canonical: "/privacy" },
+  robots: { index: false, follow: false },
   openGraph: { type: "website", url: "/privacy", title: "Privacy Policy", description: "A plain-language privacy policy for a calculator that processes project inputs locally.", images: [SOCIAL_IMAGE] },
   twitter: { card: "summary", title: "Privacy Policy", description: "A plain-language privacy policy for a calculator that processes project inputs locally.", images: [TWITTER_IMAGE] },
 };
@@ -14,10 +15,12 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return <SiteShell currentPath="/privacy"><main className="page-main prose-page shell">
     <nav className="breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><span>Privacy</span></nav>
-    <header className="prose-header"><p className="eyebrow">Privacy</p><h1>Privacy policy</h1><p>This first release is designed not to collect personal information.</p><div className="byline"><span>Effective August 18, 2026</span><span>Last reviewed August 18, 2026</span></div></header>
+    <header className="prose-header"><p className="eyebrow">Privacy</p><h1>Privacy policy</h1><p>This site is designed not to collect personal information through its application.</p><div className="byline"><span>Effective August 20, 2026</span><span>Last reviewed August 20, 2026</span></div></header>
     <section><h2>Calculator inputs</h2><p>Measurements, density, waste, and prices are calculated in your browser. The site does not send those values to a database or user account.</p></section>
     <section><h2>Share links and printing</h2><p>If you choose Copy share link, the visible calculator inputs are placed in the page URL and copied locally when browser permission allows. Anyone who receives that URL can read those values. Do not put confidential project information into calculator fields. Printing uses your browser’s print function.</p></section>
-    <section><h2>Cookies, analytics, accounts, and advertising</h2><p>This first release has no account system, analytics tag, advertising script, payment service, email form, or application cookie. Hosting infrastructure may generate basic security and request logs when the site is eventually deployed; that hosting policy must be documented before launch.</p></section>
-    <section><h2>Changes before launch</h2><p>If analytics, advertising, contact forms, or another data processor is added later, this policy and consent behavior must be updated before that feature is enabled. See the <Link href="/about">About page</Link> for the correction policy.</p></section>
+    <section><h2>Hosting and operational logs</h2><p>Vercel hosts the site and may automatically process standard request metadata, such as IP address, browser details, requested URL, and timestamps, for delivery, reliability, abuse prevention, and security.</p></section>
+    <section><h2>Optional Google Analytics</h2><p>Google Analytics loads only after you select Allow analytics. When allowed, it may use cookies and process page paths, referrer information, browser and device details, approximate location derived from network information, and usage events. The implementation removes URL query strings before sending page-location events, so calculator inputs stored in share links are not included. Advertising personalization and Google signals are disabled.</p><p>You may choose Continue without analytics and still use every calculator feature. To change a saved choice, use Analytics choices in the footer. If you withdraw consent after previously allowing analytics, the page reloads before future analytics requests. Google describes its processing in its <a href="https://policies.google.com/privacy">Privacy Policy</a>.</p></section>
+    <section><h2>Accounts, payments, and advertising</h2><p>The site has no account system, payment service, email form, remote application database, or advertising script. The analytics preference itself is stored in your browser&apos;s local storage.</p></section>
+    <section><h2>Future changes</h2><p>If advertising, contact forms, or another data processor is added later, this policy and consent behavior will be updated before that feature is enabled. See the <Link href="/about">About page</Link> for the correction policy.</p></section>
   </main></SiteShell>;
 }
