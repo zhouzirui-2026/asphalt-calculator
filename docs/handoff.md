@@ -2,9 +2,9 @@
 
 Updated: 2026-08-20
 
-Branch: `agent/launch-asphalt-top`
+Branch: `agent/enable-production-indexing`
 
-Baseline: `7b72f7e` on local `main`
+Baseline: `5f9ec8d` on public `main`
 
 ## Current state
 
@@ -24,10 +24,12 @@ Implemented routes:
 - `/privacy`
 - `/terms`
 
-The launch uses GitHub for public source and Vercel for builds and hosting.
-`SITE_INDEXING_ENABLED` remains `false` until the custom domain, HTTPS,
-canonical host, all routes, security headers, calculator flows, and optional
-analytics consent behavior pass on production.
+The launch uses GitHub for public source, Vercel for builds and hosting, and
+Cloudflare as authoritative DNS. The registrar retains domain ownership and NS
+control. The executed evidence and rollback path are in `release-record.md`.
+`SITE_INDEXING_ENABLED` is enabled on the dedicated production-indexing branch
+after the custom domain, HTTPS, canonical host, all routes, security headers,
+calculator flows, and optional analytics consent behavior passed on production.
 
 ## Analytics boundary
 
