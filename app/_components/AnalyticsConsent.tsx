@@ -2,11 +2,12 @@
 
 import Script from "next/script";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   ANALYTICS_CONSENT_KEY,
   analyticsPageLocation,
   isGoogleAnalyticsCookieName,
+  isProductionAnalyticsOrigin,
   isValidGaMeasurementId,
 } from "../../lib/analytics";
 
@@ -39,7 +40,13 @@ function removeGoogleAnalyticsCookies() {
   }
 }
 
-export function AnalyticsConsent({ measurementId }: { measurementId?: string }) {
+export function AnalyticsConsent({
+  measurementId,
+  productionOrigin,
+}: {
+  measurementId?: string;
+  productionOrigin: string;
+}) {
   const pathname = usePathname();
   const [consent, setConsent] = useState<Consent | "loading">("loading");
   const [tagReady, setTagReady] = useState(false);
@@ -48,9 +55,15 @@ export function AnalyticsConsent({ measurementId }: { measurementId?: string }) 
   const validMeasurementId = isValidGaMeasurementId(measurementId)
     ? measurementId
     : undefined;
+  const isProductionHost = useSyncExternalStore(
+    () => () => undefined,
+    () => isProductionAnalyticsOrigin(window.location.origin, productionOrigin),
+    () => false,
+  );
+  const analyticsEnabled = Boolean(validMeasurementId && isProductionHost);
 
   useEffect(() => {
-    if (!validMeasurementId) return;
+    if (!analyticsEnabled) return;
     const stored = window.localStorage.getItem(ANALYTICS_CONSENT_KEY);
     hadGrantedConsent.current = stored === "granted";
     let active = true;
@@ -64,10 +77,10 @@ export function AnalyticsConsent({ measurementId }: { measurementId?: string }) 
       active = false;
       window.removeEventListener(ANALYTICS_PREFERENCES_EVENT, openPreferences);
     };
-  }, [validMeasurementId]);
+  }, [analyticsEnabled]);
 
   useEffect(() => {
-    if (!tagReady || consent !== "granted" || !validMeasurementId || !window.gtag) return;
+    if (!tagReady || consent !== "granted" || !analyticsEnabled || !validMeasurementId || !window.gtag) return;
     if (previousPath.current === pathname) return;
     previousPath.current = pathname;
     window.gtag("event", "page_view", {
@@ -75,9 +88,9 @@ export function AnalyticsConsent({ measurementId }: { measurementId?: string }) 
       page_path: pathname,
       page_title: document.title,
     });
-  }, [consent, pathname, tagReady, validMeasurementId]);
+  }, [analyticsEnabled, consent, pathname, tagReady, validMeasurementId]);
 
-  if (!validMeasurementId) return null;
+  if (!analyticsEnabled || !validMeasurementId) return null;
 
   const choose = (choice: Exclude<Consent, null>) => {
     const shouldReload = choice === "denied" && hadGrantedConsent.current;

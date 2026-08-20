@@ -15,6 +15,7 @@ import {
 import {
   analyticsPageLocation,
   isGoogleAnalyticsCookieName,
+  isProductionAnalyticsOrigin,
   isValidGaMeasurementId,
 } from "../lib/analytics.ts";
 
@@ -34,6 +35,25 @@ test("analytics accepts GA4 IDs and strips share-link query values", () => {
   assert.equal(isValidGaMeasurementId("G-ABC123XYZ"), true);
   assert.equal(isValidGaMeasurementId("UA-123-1"), false);
   assert.equal(isValidGaMeasurementId("G-ABC123;alert(1)"), false);
+  assert.equal(
+    isProductionAnalyticsOrigin(
+      "https://asphalt-calculator.top",
+      "https://asphalt-calculator.top",
+    ),
+    true,
+  );
+  for (const origin of [
+    "http://localhost:3000",
+    "https://asphalt-calculator-preview.vercel.app",
+    "https://www.asphalt-calculator.top",
+    "not-a-url",
+  ]) {
+    assert.equal(
+      isProductionAnalyticsOrigin(origin, "https://asphalt-calculator.top"),
+      false,
+      `${origin} must not send production analytics`,
+    );
+  }
   assert.equal(
     analyticsPageLocation(
       "https://asphalt-calculator.top",

@@ -89,9 +89,12 @@ branded missing route returned 404. The production browser repeated both known
 calculator fixtures. The Google tag was absent before consent and the expected
 GA4 script appeared once after consent.
 
-The dedicated follow-up release changes only the indexing gate, regenerated
-robots/sitemap output, Node major pin, and release documentation. It is accepted
-only if CI, Preview, merge, and the post-merge production crawl all pass.
+The dedicated follow-up release changes the indexing gate, regenerated robots
+policy, Node major pin, release documentation, and one analytics hardening found
+during Preview: even if a GA4 ID is accidentally present in Preview or local
+environments, the consent UI and Google tag now activate only when the browser's
+exact HTTPS origin is the canonical production origin. It is accepted only if
+CI, Preview, merge, and the post-merge production crawl all pass.
 
 ## Excluded external actions
 

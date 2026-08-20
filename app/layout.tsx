@@ -24,7 +24,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <AnalyticsConsent measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        <AnalyticsConsent
+          measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
+          productionOrigin={SITE_ORIGIN}
+        />
       </body>
     </html>
   );
