@@ -1,0 +1,12 @@
+{
+  "siteOrigin": "https://asphalt-calculator.top",
+  "localSitemap": "public/sitemap.xml",
+  "sitemapUrl": "https://asphalt-calculator.top/sitemap.xml",
+  "indexNow": {
+    "keyFile": "public/5830219258b6428a9aebc26296d902c2bf3dd321328c460d95738649794f17b7.txt",
+    "keyLocation": "https://asphalt-calculator.top/5830219258b6428a9aebc26296d902c2bf3dd321328c460d95738649794f17b7.txt",
+    "endpoint": "https://api.indexnow.org/indexnow",
+    "userAgent": "AsphaltCalculatorSearchOperator/1.0",
+    "timeoutMs": 15000
+  }
+}
