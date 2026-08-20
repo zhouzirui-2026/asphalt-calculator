@@ -242,11 +242,18 @@ if (SITE_INDEXING_ENABLED) {
 assert.match(robots, new RegExp(`Sitemap: ${escapeRegex(SITE_ORIGIN)}/sitemap\\.xml`));
 
 const sitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
-const sitemapPaths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
-  .map((match) => new URL(match[1]).pathname)
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
+  .map((match) => match[1])
   .sort();
-const expectedSitemap = ROUTES.filter((route) => route.indexableAtLaunch).map((route) => route.path).sort();
-assert.deepEqual(sitemapPaths, expectedSitemap, "Sitemap must contain only intended production index routes");
+const expectedSitemap = ROUTES
+  .filter((route) => route.indexableAtLaunch)
+  .map((route) => route.path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`)
+  .sort();
+assert.deepEqual(
+  sitemapUrls,
+  expectedSitemap,
+  "Sitemap must contain only exact self-canonical production URLs",
+);
 
 const publicRoot = new URL("../public/", import.meta.url);
 const publicFiles = (await filesRecursively(publicRoot))
