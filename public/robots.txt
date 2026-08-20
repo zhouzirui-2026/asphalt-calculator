@@ -1,0 +1,4 @@
+# PRE-RELEASE SAFETY GATE — keep until the custom domain is verified.
+User-agent: *
+Disallow: /
+Sitemap: https://asphalt-calculator.top/sitemap.xml

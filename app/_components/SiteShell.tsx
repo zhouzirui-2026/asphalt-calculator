@@ -1,0 +1,68 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { AnalyticsPreferencesButton } from "./AnalyticsPreferencesButton";
+
+const navigation = [
+  ["/asphalt-calculator", "Material calculator"],
+  ["/asphalt-driveway-cost-calculator", "Driveway cost"],
+  ["/methodology", "Methodology"],
+] as const;
+
+export function SiteShell({
+  children,
+  currentPath,
+}: {
+  children: ReactNode;
+  currentPath: string;
+}) {
+  return (
+    <>
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <header className="site-header">
+        <div className="shell site-header__inner">
+          <Link className="brand" href="/" aria-label="Asphalt Calculator home">
+            <span className="brand__mark" aria-hidden="true">AC</span>
+            <span>Asphalt Calculator</span>
+          </Link>
+          <nav aria-label="Primary navigation">
+            <ul className="nav-list">
+              {navigation.map(([href, label]) => (
+                <li key={href}>
+                  <Link
+                    aria-current={currentPath === href ? "page" : undefined}
+                    href={href}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </header>
+      <div id="main-content" tabIndex={-1}>{children}</div>
+      <footer className="site-footer">
+        <div className="shell site-footer__grid">
+          <div>
+            <Link className="brand brand--footer" href="/">
+              <span className="brand__mark" aria-hidden="true">AC</span>
+              <span>Asphalt Calculator</span>
+            </Link>
+            <p>Transparent planning math for asphalt projects.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <Link href="/about">About</Link>
+            <Link href="/methodology">Methodology</Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <AnalyticsPreferencesButton />
+          </nav>
+          <p className="site-footer__notice">
+            Estimates are for planning only. Confirm requirements and prices
+            with qualified local professionals.
+          </p>
+        </div>
+      </footer>
+    </>
+  );
+}
