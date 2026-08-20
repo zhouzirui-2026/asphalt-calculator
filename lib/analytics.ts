@@ -9,6 +9,19 @@ export function analyticsPageLocation(origin: string, pathname: string): string 
   return `${url.origin}${url.pathname}`;
 }
 
+export function isProductionAnalyticsOrigin(
+  currentOrigin: string,
+  productionOrigin: string,
+): boolean {
+  try {
+    const current = new URL(currentOrigin);
+    const production = new URL(productionOrigin);
+    return current.protocol === "https:" && current.origin === production.origin;
+  } catch {
+    return false;
+  }
+}
+
 export function isGoogleAnalyticsCookieName(value: string): boolean {
   return /^_(?:ga(?:_.+)?|gid|gat(?:_.+)?|gac_.+)$/i.test(value);
 }

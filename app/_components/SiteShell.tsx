@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SITE_ORIGIN } from "../../site-config.mjs";
 import { AnalyticsPreferencesButton } from "./AnalyticsPreferencesButton";
 
 const navigation = [
@@ -55,7 +56,7 @@ export function SiteShell({
             <Link href="/methodology">Methodology</Link>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
-            <AnalyticsPreferencesButton />
+            <AnalyticsPreferencesButton productionOrigin={SITE_ORIGIN} />
           </nav>
           <p className="site-footer__notice">
             Estimates are for planning only. Confirm requirements and prices

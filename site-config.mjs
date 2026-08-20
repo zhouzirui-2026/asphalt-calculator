@@ -1,8 +1,9 @@
 export const SITE_ORIGIN = "https://asphalt-calculator.top";
 
-// Keep false for preview deployments. Change to true only after the custom
-// domain, HTTPS, canonical host, and production routes are verified end to end.
-export const SITE_INDEXING_ENABLED = false;
+// Enabled only after the custom domain, HTTPS, canonical host, production
+// routes, calculator fixtures, and analytics consent boundary passed the
+// production verification recorded in docs/release-record.md.
+export const SITE_INDEXING_ENABLED = true;
 
 export const ROUTES = [
   { path: "/", indexableAtLaunch: true, changefreq: "monthly", priority: "1.0" },
