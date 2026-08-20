@@ -15,4 +15,10 @@ export const ROUTES = [
   { path: "/terms", indexableAtLaunch: false, changefreq: "yearly", priority: "0.2" },
 ];
 
-export const PUBLIC_FILE_ALLOWLIST = ["favicon.svg", "og.png", "robots.txt", "sitemap.xml"];
+export const PUBLIC_FILE_ALLOWLIST = [
+  "5830219258b6428a9aebc26296d902c2bf3dd321328c460d95738649794f17b7.txt",
+  "favicon.svg",
+  "og.png",
+  "robots.txt",
+  "sitemap.xml",
+];

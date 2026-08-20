@@ -13,6 +13,10 @@ export const metadata: Metadata = {
     "Plan asphalt material and driveway costs with editable assumptions, visible formulas, and US or metric units.",
   robots: { index: SITE_INDEXING_ENABLED, follow: SITE_INDEXING_ENABLED },
   icons: { icon: "/favicon.svg" },
+  verification: {
+    google: "wIM8A1q0ozQnPZs4ahAXGhpWbHxZ4TjjQGtgBYnxDo4",
+    yandex: "0e0f71b443cf0200",
+  },
 };
 
 export default function RootLayout({
