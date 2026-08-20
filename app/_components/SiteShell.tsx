@@ -54,6 +54,7 @@ export function SiteShell({
           <nav aria-label="Footer navigation">
             <Link href="/about">About</Link>
             <Link href="/methodology">Methodology</Link>
+            <a href="mailto:support@asphalt-calculator.top">Support</a>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
             <AnalyticsPreferencesButton productionOrigin={SITE_ORIGIN} />

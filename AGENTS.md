@@ -5,9 +5,11 @@ These rules apply to this repository in addition to `C:\web-new\AGENTS.md`.
 ## Product boundary
 
 - This is a standalone, English-first calculator site for United States users.
-- Keep the product static-first: no accounts, remote database, payments, email,
-  advertising, or paid API. Optional GA4 may load only after explicit consent;
-  never send calculator values or share-link query parameters.
+- Keep the product static-first: no accounts, remote database, payments,
+  contact form, outbound email service, advertising, or paid API. The documented
+  inbound support alias is allowed; it must not receive calculator values
+  automatically. Optional GA4 may load only after explicit consent; never send
+  calculator values or share-link query parameters.
 - Treat every result as a planning estimate. Never imply engineering approval,
   a contractor quote, a nationally fixed price, or professional certification.
 - Density, thickness, price, waste, and cost assumptions must be visible and

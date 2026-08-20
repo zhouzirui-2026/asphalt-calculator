@@ -77,6 +77,8 @@ deployable-build secret/private-source boundary.
 ## Privacy and scope
 
 There are no accounts, advertising scripts, payments, email forms, remote
-databases, or paid APIs. Optional GA4 is consent-gated and excludes share-link
-queries. Results are mathematical planning estimates, not pavement designs,
-specifications, purchase orders, professional advice, or contractor quotes.
+databases, or paid APIs. A public support alias forwards inbound messages to a
+monitored mailbox; it is not connected to calculator inputs. Optional GA4 is
+consent-gated and excludes share-link queries. Results are mathematical planning
+estimates, not pavement designs, specifications, purchase orders, professional
+advice, or contractor quotes.

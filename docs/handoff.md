@@ -11,8 +11,9 @@ Baseline: `5f9ec8d` on public `main`
 The launch candidate is a native Next.js 16 static-first site targeting
 `https://asphalt-calculator.top`. Every product route is prerendered; calculator
 inputs, unit conversion, cost estimates, sharing, and printing run in the
-browser. The product has no accounts, remote database, payment, email, or
-private vendor dependency.
+browser. The product has no accounts, remote database, payment, contact form,
+outbound email service, or private vendor dependency. The documented inbound
+support alias is separate from calculator operation.
 
 Implemented routes:
 
@@ -76,7 +77,8 @@ boundary across `.next`.
    `robots.txt`, sitemap, page robots metadata, and canonicals.
 
 Do not submit Search Console, Bing Webmaster Tools, IndexNow, directories,
-backlinks, email, or other external forms as part of this release.
+backlinks, or other external forms as part of this release. The separately
+authorized post-launch inbound support route does not send outbound email.
 
 ## Remaining non-blocking risk
 
