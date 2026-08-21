@@ -30,16 +30,15 @@ Cloudflare as authoritative DNS. The registrar retains domain ownership and NS
 control. The executed evidence and rollback path are in `release-record.md`.
 `SITE_INDEXING_ENABLED` is enabled on the dedicated production-indexing branch
 after the custom domain, HTTPS, canonical host, all routes, security headers,
-calculator flows, and optional analytics consent behavior passed on production.
+calculator flows, and analytics behavior passed on production.
 
 ## Analytics boundary
 
-GA4 is configured only through `NEXT_PUBLIC_GA_MEASUREMENT_ID`. No Google tag is
-rendered or requested until a visitor explicitly allows analytics. Page
-locations exclude query strings and fragments so calculator/share parameters
-are not sent. Declining or withdrawing consent removes matching GA cookies and
-preserves unrelated cookies. The analytics preferences control is omitted when
-no valid GA4 Measurement ID is configured.
+GA4 is configured only through `NEXT_PUBLIC_GA_MEASUREMENT_ID`. The Google tag
+loads automatically on the exact canonical production origin and is omitted in
+local and Preview environments. Page locations exclude query strings and
+fragments so calculator/share parameters are not sent. Advertising
+personalization and Google signals remain disabled.
 
 Measurement IDs are public site identifiers, but login sessions, API tokens,
 cookies, analytics exports, and credentials must never be committed.
@@ -71,7 +70,7 @@ boundary across `.next`.
 3. Configure the site-specific GA4 stream and Vercel public environment value.
 4. Merge the verified candidate, add the apex and `www` domains, then apply only
    Vercel's exact DNS records at the authoritative DNS provider.
-5. Verify production HTTPS, redirects, metadata, routes, calculators, consent,
+5. Verify production HTTPS, redirects, metadata, routes, calculators, analytics,
    and rollback evidence while indexing is still disabled.
 6. Enable indexing in a separate reviewed commit, rebuild, deploy, and verify
    `robots.txt`, sitemap, page robots metadata, and canonicals.

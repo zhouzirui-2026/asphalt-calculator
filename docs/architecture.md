@@ -13,8 +13,10 @@ calculations in the browser and sends no project inputs to a server. It does not
 include accounts, payments, a contact form, outbound email, a remote database,
 contractor lead capture, advertising, or paid APIs. A public inbound support
 alias is isolated from calculator inputs and forwards to a monitored mailbox.
-Optional GA4 is isolated behind explicit consent and receives page paths without
-calculator share-link queries.
+GA4 is isolated to the exact canonical production origin and receives page
+paths without calculator share-link queries. It loads automatically when its
+public measurement ID is configured; advertising personalization and Google
+signals remain disabled.
 
 The UI renders meaningful explanatory HTML on the server. Interactive fields use
 small client components backed by pure functions in `lib/calculations.ts`.
@@ -73,7 +75,7 @@ the first release has no product need that justifies the extra boundary.
 All routes remain `noindex, nofollow` for the first production candidate and
 `robots.txt` disallows crawling. The public routes switch to index/follow only
 after the custom domain, HTTPS, canonical redirect, production routes, and
-analytics consent behavior pass online verification.
+analytics behavior passes online verification.
 
 ## Calculation authority
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_INDEXING_ENABLED, SITE_ORIGIN } from "../site-config.mjs";
-import { AnalyticsConsent } from "./_components/AnalyticsConsent";
+import { GoogleAnalytics } from "./_components/GoogleAnalytics";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <AnalyticsConsent
+        <GoogleAnalytics
           measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
           productionOrigin={SITE_ORIGIN}
         />

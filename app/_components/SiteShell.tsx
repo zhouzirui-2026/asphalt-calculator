@@ -1,7 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { SITE_ORIGIN } from "../../site-config.mjs";
-import { AnalyticsPreferencesButton } from "./AnalyticsPreferencesButton";
 
 const navigation = [
   ["/asphalt-calculator", "Material calculator"],
@@ -57,7 +55,6 @@ export function SiteShell({
             <a href="mailto:support@asphalt-calculator.top">Support</a>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
-            <AnalyticsPreferencesButton productionOrigin={SITE_ORIGIN} />
           </nav>
           <p className="site-footer__notice">
             Estimates are for planning only. Confirm requirements and prices

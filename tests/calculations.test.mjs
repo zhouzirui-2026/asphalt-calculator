@@ -14,7 +14,6 @@ import {
 } from "../lib/calculations.ts";
 import {
   analyticsPageLocation,
-  isGoogleAnalyticsCookieName,
   isProductionAnalyticsOrigin,
   isValidGaMeasurementId,
 } from "../lib/analytics.ts";
@@ -61,12 +60,6 @@ test("analytics accepts GA4 IDs and strips share-link query values", () => {
     ),
     "https://asphalt-calculator.top/asphalt-calculator",
   );
-  for (const name of ["_ga", "_ga_ABC123", "_gid", "_gat", "_gat_gtag_G_ABC", "_gac_UA_1"]) {
-    assert.equal(isGoogleAnalyticsCookieName(name), true, `${name} should be removable`);
-  }
-  for (const name of ["session", "asphalt-analytics-consent", "ga", "_other"]) {
-    assert.equal(isGoogleAnalyticsCookieName(name), false, `${name} must be preserved`);
-  }
 });
 
 test("parses only decimal strings accepted by number inputs", () => {
