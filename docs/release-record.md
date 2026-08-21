@@ -11,6 +11,11 @@ site to load GA4 automatically, while preserving the exact-origin gate,
 sanitized page locations without query strings or fragments, manual
 single-count page views, disabled advertising personalization, and disabled
 Google signals. Local and Preview origins still do not load the production tag.
+The production smoke test also caught that the original wrapper initialized the
+`gtag` queue after the external script and pushed arrays rather than Google's
+standard `arguments` entries. The follow-up initializes the queue first, then
+loads the tag, so the queued configuration and sanitized page view are consumed
+by the Google runtime.
 
 ## Identity
 

@@ -286,6 +286,7 @@ for (const url of buildFiles) {
   if (/\/static\/.*\.js$/i.test(url.pathname)) clientJavaScript += content;
 }
 assert.match(clientJavaScript, /googletagmanager\.com\/gtag\/js/i, "Client build must contain the production-only GA4 loader");
+assert.match(clientJavaScript, /dataLayer\.push\(arguments\)/i, "Client build must initialize the standard gtag arguments queue");
 assert.doesNotMatch(clientJavaScript, /asphalt-analytics-consent|Allow analytics|Continue without analytics/i, "Client build must not retain the removed opt-in gate");
 
 console.log(`Site audit passed for ${routePaths.length} routes: production HTTP, metadata, canonical, indexing gate, security headers, host redirect, 404, social tags, FAQ parity, structured data, internal links, sitemap, robots, route allowlist, analytics origin boundary, and public-build boundary.`);

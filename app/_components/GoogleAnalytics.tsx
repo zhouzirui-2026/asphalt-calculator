@@ -50,21 +50,25 @@ export function GoogleAnalytics({
   if (!analyticsEnabled || !validMeasurementId) return null;
 
   return (
-    <Script
-      id="google-analytics"
-      src={`https://www.googletagmanager.com/gtag/js?id=${validMeasurementId}`}
-      strategy="afterInteractive"
-      onLoad={() => {
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = (...args: unknown[]) => window.dataLayer?.push(args);
-        window.gtag("js", new Date());
-        window.gtag("config", validMeasurementId, {
-          allow_ad_personalization_signals: false,
-          allow_google_signals: false,
-          send_page_view: false,
-        });
-        setTagReady(true);
-      }}
-    />
+    <>
+      <Script id="google-analytics-init" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          window.gtag('config', ${JSON.stringify(validMeasurementId)}, {
+            allow_ad_personalization_signals: false,
+            allow_google_signals: false,
+            send_page_view: false
+          });
+        `}
+      </Script>
+      <Script
+        id="google-analytics"
+        src={`https://www.googletagmanager.com/gtag/js?id=${validMeasurementId}`}
+        strategy="afterInteractive"
+        onLoad={() => setTagReady(true)}
+      />
+    </>
   );
 }
