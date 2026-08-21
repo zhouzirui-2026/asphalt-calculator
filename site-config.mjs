@@ -1,7 +1,7 @@
 export const SITE_ORIGIN = "https://asphalt-calculator.top";
 
 // Enabled only after the custom domain, HTTPS, canonical host, production
-// routes, calculator fixtures, and analytics consent boundary passed the
+// routes, calculator fixtures, and analytics origin/data-minimization boundary passed the
 // production verification recorded in docs/release-record.md.
 export const SITE_INDEXING_ENABLED = true;
 

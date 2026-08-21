@@ -2,6 +2,16 @@
 
 Updated: 2026-08-20 (Asia/Shanghai)
 
+## Analytics collection correction — 2026-08-21
+
+The original release required an explicit site-wide analytics choice before
+loading GA4. Production inspection confirmed that this left the configured
+property with no received data. The follow-up changes the canonical production
+site to load GA4 automatically, while preserving the exact-origin gate,
+sanitized page locations without query strings or fragments, manual
+single-count page views, disabled advertising personalization, and disabled
+Google signals. Local and Preview origins still do not load the production tag.
+
 ## Identity
 
 | Field | Value |
@@ -24,7 +34,7 @@ stored in this repository.
 ```text
 GitHub main -> Vercel Next.js build and application origin
 registrar -> Cloudflare nameservers -> Vercel custom-domain records
-browser consent -> GA4 web stream (canonical production host only)
+canonical production browser -> automatic GA4 page views (sanitized paths only)
 ```
 
 This intentionally follows the operating separation already proven by the

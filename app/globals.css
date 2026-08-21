@@ -177,25 +177,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .site-footer p { margin: 14px 0 0; font-size: 0.9rem; }
 .site-footer nav { display: grid; gap: 8px; }
 .site-footer nav a { width: fit-content; text-underline-offset: 4px; }
-.footer-link-button {
-  width: fit-content; padding: 0; border: 0; background: transparent; color: inherit;
-  cursor: pointer; text-decoration: underline; text-underline-offset: 4px;
-}
 .site-footer__notice { color: #939d99; }
-
-.analytics-consent {
-  position: fixed; z-index: 90; right: 18px; bottom: 18px;
-  width: min(560px, calc(100% - 36px)); padding: 22px;
-  border: 1px solid #4c5754; border-radius: var(--radius-md);
-  background: var(--surface); box-shadow: 0 20px 70px rgba(12, 18, 17, 0.3);
-}
-.analytics-consent p { margin: 0; color: var(--muted); }
-.analytics-consent__title {
-  margin-bottom: 5px !important; color: var(--ink) !important; font-size: 1.08rem;
-  font-weight: 800;
-}
-.analytics-consent__actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
-.analytics-consent__actions .button { cursor: pointer; }
 
 .page-main { padding-bottom: 72px; }
 .tool-intro { max-width: 920px; padding-block: 62px 42px; }

@@ -191,7 +191,7 @@ try {
     assert.ok(metaContent(html, "twitter:title"), `${path} needs twitter:title`);
     assert.ok(metaContent(html, "twitter:description"), `${path} needs twitter:description`);
     assert.equal(metaContent(html, "twitter:image"), `${SITE_ORIGIN}/og.png`, `${path} twitter:image mismatch`);
-    assert.doesNotMatch(html, /googletagmanager\.com\/gtag/i, `${path} must not server-render Google Analytics before consent`);
+    assert.doesNotMatch(html, /googletagmanager\.com\/gtag/i, `${path} must not server-render the client-only Google Analytics tag`);
     assert.match(html, /href=["']mailto:support@asphalt-calculator\.top["']/i, `${path} needs the monitored support alias in the shared footer`);
     assert.ok(!titles.has(title), `${path} title duplicates another route`);
     assert.ok(!descriptions.has(description), `${path} description duplicates another route`);
@@ -235,6 +235,8 @@ try {
   assert.match(privacyHtml, /Cloudflare Email Routing/i, "Privacy policy must disclose the inbound email processor");
   assert.match(privacyHtml, /monitored Google mailbox/i, "Privacy policy must disclose the forwarding destination category");
   assert.match(privacyHtml, /calculator never emails your measurements/i, "Privacy policy must separate calculator inputs from support email");
+  assert.match(privacyHtml, /Google Analytics loads automatically/i, "Privacy policy must disclose automatic GA4 loading");
+  assert.match(privacyHtml, /removes URL query strings/i, "Privacy policy must disclose GA4 share-query exclusion");
 
   for (const [path, count] of inbound) assert.ok(count > 0, `${path} is an orphan route`);
 } finally {
@@ -276,10 +278,14 @@ assert.deepEqual(publicFiles, [...PUBLIC_FILE_ALLOWLIST].sort(), "Public files a
 
 const buildFiles = await filesRecursively(new URL("../.next/", import.meta.url));
 const forbidden = /(vendor-private|shipany|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|\bsk-(?:proj-|svcacct-)?[A-Za-z0-9_-]{40,}\b)/i;
+let clientJavaScript = "";
 for (const url of buildFiles) {
   if (!/\.(?:js|css|html|json|txt|xml|map)$/i.test(url.pathname)) continue;
   const content = await readFile(url, "utf8");
   assert.doesNotMatch(content, forbidden, `Possible private or secret material in deployable build: ${url.pathname}`);
+  if (/\/static\/.*\.js$/i.test(url.pathname)) clientJavaScript += content;
 }
+assert.match(clientJavaScript, /googletagmanager\.com\/gtag\/js/i, "Client build must contain the production-only GA4 loader");
+assert.doesNotMatch(clientJavaScript, /asphalt-analytics-consent|Allow analytics|Continue without analytics/i, "Client build must not retain the removed opt-in gate");
 
-console.log(`Site audit passed for ${routePaths.length} routes: production HTTP, metadata, canonical, indexing gate, security headers, host redirect, 404, social tags, FAQ parity, structured data, internal links, sitemap, robots, route allowlist, analytics consent boundary, and public-build boundary.`);
+console.log(`Site audit passed for ${routePaths.length} routes: production HTTP, metadata, canonical, indexing gate, security headers, host redirect, 404, social tags, FAQ parity, structured data, internal links, sitemap, robots, route allowlist, analytics origin boundary, and public-build boundary.`);

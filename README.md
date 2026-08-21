@@ -6,7 +6,7 @@ All seven routes are prerendered as HTML; calculator logic runs in the browser.
 
 Status: authorized launch candidate for `https://asphalt-calculator.top`. The
 repository deliberately keeps `noindex, nofollow` and `Disallow: /` until the
-custom domain, HTTPS, canonical redirect, routes, and consent behavior have
+custom domain, HTTPS, canonical redirect, routes, and analytics behavior have
 been verified on Vercel.
 
 ## Routes
@@ -42,10 +42,11 @@ required for normal requests.
 ## Analytics configuration
 
 Set `NEXT_PUBLIC_GA_MEASUREMENT_ID` to the GA4 web stream ID in Vercel. The ID is
-public configuration, not a secret. If it is absent or invalid, no consent
-banner or Google script is emitted. If configured, Google Analytics loads only
-after the visitor selects **Allow analytics**. Page locations are sent without
-query strings so share-link dimensions and prices remain local.
+public configuration, not a secret. If it is absent or invalid, no Google
+script is emitted. If configured, Google Analytics loads automatically only on
+the exact canonical production origin. Page locations are sent without query
+strings so share-link dimensions and prices remain local; advertising
+personalization and Google signals remain disabled.
 
 ## Validation
 
@@ -78,7 +79,7 @@ deployable-build secret/private-source boundary.
 
 There are no accounts, advertising scripts, payments, email forms, remote
 databases, or paid APIs. A public support alias forwards inbound messages to a
-monitored mailbox; it is not connected to calculator inputs. Optional GA4 is
-consent-gated and excludes share-link queries. Results are mathematical planning
+monitored mailbox; it is not connected to calculator inputs. GA4 runs only on
+the canonical production origin and excludes share-link queries. Results are mathematical planning
 estimates, not pavement designs, specifications, purchase orders, professional
 advice, or contractor quotes.

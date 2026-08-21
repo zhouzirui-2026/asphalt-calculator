@@ -110,12 +110,9 @@ www 子域名 ── 308 ───────► https://asphalt-calculator.top
 ### 加载规则
 
 1. Vercel 环境变量 `NEXT_PUBLIC_GA_MEASUREMENT_ID` 保存 GA4 Web Stream ID；该 ID 是公开配置，不是密钥。
-2. ID 缺失或格式无效时，不显示分析同意框，也不加载 Google 脚本。
-3. 第一次访问默认不加载 GA；访问者可选择：
-   - `Allow analytics`；
-   - `Continue without analytics`。
-4. 选择保存在浏览器 localStorage；页脚提供 `Analytics choices` 入口。
-5. 从允许改为拒绝时刷新页面，确保后续页面生命周期不再发送分析请求。
+2. ID 缺失或格式无效时，不加载 Google 脚本。
+3. 仅在浏览器的精确来源为 `https://asphalt-calculator.top` 时自动加载；本地、Preview 和 `www` 跳转入口不发送生产分析。
+4. 页面首次加载及客户端路由变化时各发送一次手工 `page_view`；关闭 GA4 自动 page view，避免重复计数。
 
 ### 数据最小化
 
@@ -124,14 +121,13 @@ www 子域名 ── 308 ───────► https://asphalt-calculator.top
 - 不发送长度、宽度、面积、厚度、密度、废料、材料价格或成本输入；
 - 不定义计算结果、自定义价格或分享参数事件；
 - 禁用广告个性化信号和 Google Signals；
-- 隐私页明确说明 Vercel 请求日志、GA4、同意方式、撤回方式和 Google 隐私政策。
+- 隐私页明确说明 Vercel 请求日志、自动 GA4、浏览器拦截方式和 Google 隐私政策。
 
 ### 验收证据
 
-- 未同意：网络面板无 `googletagmanager.com` 和 `google-analytics.com` 请求；
-- 同意后：GA 脚本加载，page_view 的 `page_location` 不含 `?` 后参数；
-- 拒绝：完整计算器仍可使用；
-- 撤回：页面刷新，之后无 GA 请求；
+- 生产页面打开后：GA 脚本自动加载；
+- 本地与 Preview：网络面板无 `googletagmanager.com` 和 `google-analytics.com` 请求；
+- `page_view` 的 `page_location` 不含 `?` 后参数；
 - 分享链接测试证明尺寸和价格不会进入 GA 请求。
 
 ## 8. SEO 与索引门槛
