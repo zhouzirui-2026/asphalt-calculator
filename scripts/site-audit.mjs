@@ -186,6 +186,11 @@ try {
     assert.ok(metaContent(html, "og:title", "property"), `${path} needs og:title`);
     assert.ok(metaContent(html, "og:description", "property"), `${path} needs og:description`);
     assert.equal(metaContent(html, "og:url", "property"), expectedUrl, `${path} og:url mismatch`);
+    assert.equal(
+      metaContent(html, "naver-site-verification"),
+      "f3d10a5731baa16cc14ac722e81dfbc90531b99d",
+      `${path} must expose the current Naver ownership token`,
+    );
     assert.equal(metaContent(html, "og:image", "property"), `${SITE_ORIGIN}/og.png`, `${path} og:image mismatch`);
     assert.ok(metaContent(html, "twitter:card"), `${path} needs twitter:card`);
     assert.ok(metaContent(html, "twitter:title"), `${path} needs twitter:title`);
