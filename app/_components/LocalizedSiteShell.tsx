@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const shellCopy = {
   de: {
@@ -51,12 +52,15 @@ export function LocalizedSiteShell({
             <span className="brand__mark" aria-hidden="true">AC</span>
             <span>Asphalt Calculator</span>
           </Link>
-          <nav aria-label={copy.primaryNavigation}>
-            <ul className="nav-list">
-              <li><Link aria-current="page" href={currentPath}>{copy.calculator}</Link></li>
-              <li><Link href="/methodology" hrefLang="en">{copy.methodology}</Link></li>
-            </ul>
-          </nav>
+          <div className="site-header__controls">
+            <LanguageSwitcher currentLocale={locale} />
+            <nav aria-label={copy.primaryNavigation}>
+              <ul className="nav-list">
+                <li><Link aria-current="page" href={currentPath}>{copy.calculator}</Link></li>
+                <li><Link href="/methodology" hrefLang="en">{copy.methodology}</Link></li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </header>
       <div id="main-content" tabIndex={-1}>{children}</div>

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { languageAlternates } from "../../../../site-config.mjs";
 import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../../../lib/seo";
 import { FaqSection, type FaqItem } from "../../../_components/FaqSection";
-import { LanguageSwitcher } from "../../../_components/LanguageSwitcher";
 import { LocalizedMaterialEstimator } from "../../../_components/LocalizedMaterialEstimator";
 import { LocalizedSiteShell } from "../../../_components/LocalizedSiteShell";
 
@@ -67,7 +66,6 @@ export default function GermanAsphaltCalculatorPage() {
           <div className="fact-strip" role="list" aria-label="Funktionsumfang">
             <span role="listitem">Meter + Zentimeter</span><span role="listitem">kg/m³ + Tonnen</span><span role="listitem">Euro je Tonne</span>
           </div>
-          <LanguageSwitcher currentLocale="de" />
         </header>
 
         <div className="shell calculator-wrap">

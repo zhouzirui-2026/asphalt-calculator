@@ -4,7 +4,6 @@ import { languageAlternates } from "../../../site-config.mjs";
 import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../../lib/seo";
 import { AsphaltEstimator } from "../../_components/AsphaltEstimator";
 import { FaqSection, type FaqItem } from "../../_components/FaqSection";
-import { LanguageSwitcher } from "../../_components/LanguageSwitcher";
 import { SiteShell } from "../../_components/SiteShell";
 
 const alternates = languageAlternates("materialCalculator");
@@ -72,7 +71,6 @@ export default function AsphaltCalculatorPage() {
           <div className="fact-strip" role="list" aria-label="Calculator scope">
             <span role="listitem">US + metric</span><span role="listitem">Short tons + tonnes</span><span role="listitem">Share + print locally</span>
           </div>
-          <LanguageSwitcher currentLocale="en" />
         </header>
 
         <div className="shell calculator-wrap">
