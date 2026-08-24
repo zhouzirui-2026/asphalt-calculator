@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { SITE_INDEXING_ENABLED, SITE_ORIGIN } from "../site-config.mjs";
+import {
+  DEFAULT_LOCALE,
+  SITE_INDEXING_ENABLED,
+  SITE_ORIGIN,
+} from "../site-config.mjs";
 import { GoogleAnalytics } from "./_components/GoogleAnalytics";
 import "./globals.css";
 
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
   description:
     "Plan asphalt material and driveway costs with editable assumptions, visible formulas, and US or metric units.",
   robots: { index: SITE_INDEXING_ENABLED, follow: SITE_INDEXING_ENABLED },
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: { url: "/favicon.svg", type: "image/svg+xml" } },
   verification: {
     google: "wIM8A1q0ozQnPZs4ahAXGhpWbHxZ4TjjQGtgBYnxDo4",
     yandex: "0e0f71b443cf0200",
@@ -25,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang={DEFAULT_LOCALE.htmlLang} dir={DEFAULT_LOCALE.direction}>
       <body>
         {children}
         <GoogleAnalytics

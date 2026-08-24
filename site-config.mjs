@@ -1,5 +1,40 @@
 export const SITE_ORIGIN = "https://asphalt-calculator.top";
 
+// Only launch-ready locales belong in this registry. Adding a locale here is a
+// public URL decision: its pages must already have native-quality content,
+// correct units/examples, self-canonicals, reciprocal hreflang, and sitemap
+// parity. Candidate languages stay in the planning record until that gate is
+// met.
+export const DEFAULT_LOCALE = Object.freeze({
+  code: "en",
+  htmlLang: "en",
+  direction: "ltr",
+  pathPrefix: "",
+});
+
+export const LOCALES = Object.freeze([DEFAULT_LOCALE]);
+
+export function localeForCode(code) {
+  const locale = LOCALES.find((candidate) => candidate.code === code);
+  if (!locale) throw new Error(`Locale is not launch-ready: ${code}`);
+  return locale;
+}
+
+export function localizedPath(path, localeCode = DEFAULT_LOCALE.code) {
+  if (!/^\/(?!\/)/.test(path) || /[?#]/.test(path)) {
+    throw new Error(`Expected a canonical root-relative path, received: ${path}`);
+  }
+
+  const locale = localeForCode(localeCode);
+  if (!locale.pathPrefix) return path;
+  return path === "/" ? `${locale.pathPrefix}/` : `${locale.pathPrefix}${path}`;
+}
+
+export function localizedUrl(path, localeCode = DEFAULT_LOCALE.code) {
+  const localized = localizedPath(path, localeCode);
+  return localized === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${localized}`;
+}
+
 // Enabled only after the custom domain, HTTPS, canonical host, production
 // routes, calculator fixtures, and analytics origin/data-minimization boundary passed the
 // production verification recorded in docs/release-record.md.

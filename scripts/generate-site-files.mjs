@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { ROUTES, SITE_INDEXING_ENABLED, SITE_ORIGIN } from "../site-config.mjs";
+import {
+  localizedUrl,
+  ROUTES,
+  SITE_INDEXING_ENABLED,
+  SITE_ORIGIN,
+} from "../site-config.mjs";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const checkOnly = process.argv.includes("--check");
@@ -26,7 +31,7 @@ const sitemapEntries = ROUTES
   .filter((route) => route.indexableAtLaunch)
   .map((route) => [
     "  <url>",
-    `    <loc>${route.path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`}</loc>`,
+    `    <loc>${localizedUrl(route.path)}</loc>`,
     `    <changefreq>${route.changefreq}</changefreq>`,
     `    <priority>${route.priority}</priority>`,
     "  </url>",

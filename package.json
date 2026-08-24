@@ -11,7 +11,7 @@
     "sync:site:check": "node scripts/generate-site-files.mjs --check",
     "build": "npm run sync:site && next build",
     "start": "next start",
-    "test": "node --experimental-strip-types --test tests/calculations.test.mjs",
+    "test": "node --experimental-strip-types --test \"tests/*.test.mjs\"",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit",
     "audit:site": "node scripts/site-audit.mjs",

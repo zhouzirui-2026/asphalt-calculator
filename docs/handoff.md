@@ -1,24 +1,26 @@
-# Product handoff
+# Product and internationalization handoff
 
 Updated: 2026-08-24
 
-Branch: `agent/long-tail-workflows`
+Branch: `agent/de-fr-locales`
 
 Baseline: `ddab044` on public `main`
 
-## Current state
+## Integrated prerequisite state
 
-The production product is a native Next.js 16 static-first site at
-`https://asphalt-calculator.top`. This task candidate adds a known-volume asphalt
-weight converter and one answer-first tonnage formula guide while keeping
-tonnage, blacktop, online, driveway, and close question synonyms on task-led
-canonical pages. Every product route is prerendered; calculator inputs, unit
-conversion, estimates, sharing, and printing run in the browser. The product has
-no accounts, remote database, payment, contact form, outbound email service, or
-private vendor dependency. The documented inbound support alias is separate
-from calculator operation.
+This task branch combines two completed, independently reviewed prerequisites:
 
-Implemented routes:
+- the task-led long-tail release, which adds `/asphalt-weight-calculator` and
+  `/how-to-calculate-asphalt-tonnage` without creating synonym-only tonnage,
+  blacktop, online, or driveway routes;
+- the internationalization-readiness release, which adds a fail-closed locale
+  registry, canonical URL helpers, HTML language/direction checks, typed SVG
+  favicon metadata, and production-like artifact auditing.
+
+The branch is an integration worktree for the German and French localization
+pilot. Production remains unchanged until a separately authorized release.
+
+## Current routes before locale implementation
 
 - `/`
 - `/asphalt-calculator`
@@ -30,25 +32,24 @@ Implemented routes:
 - `/privacy`
 - `/terms`
 
-The launch uses GitHub for public source, Vercel for builds and hosting, and
-Cloudflare as authoritative DNS. The registrar retains domain ownership and NS
-control. The executed evidence and rollback path are in `release-record.md`.
-`SITE_INDEXING_ENABLED` remains enabled for the production site. Privacy and
-terms remain noindex. This task makes no DNS, domain, analytics configuration,
-search-submission, or production deployment change.
+Every route is prerendered. Calculator inputs, unit conversion, estimates,
+sharing, and printing run in the browser. The product has no accounts, remote
+database, payment, contact form, outbound email service, advertising, paid API,
+or private vendor dependency.
 
-## Analytics boundary
+## Search and locale boundary
 
-GA4 is configured only through `NEXT_PUBLIC_GA_MEASUREMENT_ID`. The Google tag
-loads automatically on the exact canonical production origin and is omitted in
-local and Preview environments. Page locations exclude query strings and
-fragments so calculator/share parameters are not sent. Advertising
-personalization and Google signals remain disabled.
+The observed provider state is recorded in
+`docs/search-status-2026-08-24.md`. The locale evidence gate and URL contract are
+in `docs/internationalization-readiness.md`; the long-tail task map is in
+`docs/long-tail-page-plan.md`.
 
-Measurement IDs are public site identifiers, but login sessions, API tokens,
-cookies, analytics exports, and credentials must never be committed.
+`site-config.mjs` owns the site origin, route allowlist, default locale, locale
+direction, and canonical URL helpers. The sitemap generator and audits consume
+that same contract. Before this pilot is implemented, only `en` is registered
+and no hreflang is emitted.
 
-## Local verification
+## Validation
 
 Run from a clean checkout:
 
@@ -58,49 +59,27 @@ npm run check
 npm test
 npm run build
 npm run audit:site
+npm run audit:artifact:render
 npm audit
 git diff --check
 ```
 
-The site audit starts the production Next.js server and verifies the nine
-allowlisted routes, metadata, canonical URLs, noindex/index policy, FAQ visible
-text versus JSON-LD, sitemap and robots output, internal links, 404 behavior,
-canonical-host redirect, security headers, public-file allowlist, and secret
-boundary across `.next`.
+The repository audit verifies all allowlisted routes, metadata, canonicals,
+index policy, FAQ parity, sitemap and robots output, internal links, 404
+behavior, canonical-host redirect, security headers, locale markup, favicon
+type, public-file allowlist, and the deployable secret boundary. The generic
+artifact adapter remains a second independent inspection surface.
 
-`npm run audit:artifact:render` also creates an ignored `dist/` adapter containing
-the exact rendered HTML, committed public files, and client-static assets for
-the Web Project Operator generic artifact auditor. `site-policy.json` delegates
-two duplicate checks to the stricter repository audit: exact FAQ parity, because
-the generic parser does not decode Next's `&#x27;` apostrophe entity, and exact
-root canonical/sitemap equality, because the generic URL parser normalizes the
-raw no-slash origin to `/`. The repository audit compares both contracts against
-the raw rendered values and remains mandatory.
+## Release and rollback
 
-## Review and release sequence
-
-1. Complete local checks, the production-like route audit, and desktop/mobile
-   browser QA on this task worktree.
-2. Review the task diff against `docs/long-tail-page-plan.md` and confirm no
-   synonym-only route was introduced.
-3. Push the branch and create a draft PR only when authorized.
-4. Verify a Vercel Preview, including both new workflows, metadata, canonicals,
-   internal links, 320/390 px layouts, keyboard errors, sharing, and analytics
-   query stripping.
-5. Merge and promote to production only with separate explicit authorization.
-   The previous Ready production deployment is the rollback point.
-6. After an authorized release, run the Day 2/7/28 query, crawl, landing-page
-   overlap, and experience checks before expanding the page family.
+1. Finish the German/French pilot and all local validation in this worktree.
+2. Review the complete branch diff against `origin/main`.
+3. Push and create a draft PR only when authorized.
+4. Verify a Vercel Preview at desktop, 390 px, and 320 px.
+5. Merge and promote only with separate explicit authorization.
+6. After an authorized release, run Day-2/7/28 locale query, crawl, index, and
+   task-completion reviews before expanding the language set.
 
 Do not submit Search Console, Bing Webmaster Tools, IndexNow, directories,
-backlinks, or other external forms as part of this implementation. The
-separately authorized post-launch inbound support route does not send outbound
-email.
+backlinks, DNS, or other external forms as part of this implementation.
 
-## Remaining non-blocking risk
-
-- Automated browser coverage is Chromium-first; Safari and Firefox remain a
-  follow-up compatibility check.
-- Cost estimates depend on user-entered local rates and scope; the product does
-  not present them as contractor quotes.
-- The social card is larger than ideal but is not part of normal page rendering.

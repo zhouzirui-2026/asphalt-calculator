@@ -7,6 +7,9 @@ import { createServer } from "node:net";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 import {
+  DEFAULT_LOCALE,
+  localizedUrl,
+  LOCALES,
   PUBLIC_FILE_ALLOWLIST,
   ROUTES,
   SITE_INDEXING_ENABLED,
@@ -15,6 +18,12 @@ import {
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const routePaths = ROUTES.map((route) => route.path);
+
+assert.ok(LOCALES.length > 0, "At least one launch-ready locale is required");
+assert.equal(LOCALES[0], DEFAULT_LOCALE, "The default locale must lead the locale registry");
+assert.equal(DEFAULT_LOCALE.pathPrefix, "", "Default-language URLs must remain unprefixed");
+assert.equal(new Set(LOCALES.map((locale) => locale.code)).size, LOCALES.length, "Locale codes must be unique");
+assert.equal(new Set(LOCALES.map((locale) => locale.pathPrefix)).size, LOCALES.length, "Locale path prefixes must be unique");
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -151,6 +160,10 @@ try {
     pages.set(path, await response.text());
   }
 
+  const favicon = await fetch(`${server.baseUrl}/favicon.svg`);
+  assert.equal(favicon.status, 200, "The declared favicon must return 200");
+  assert.match(favicon.headers.get("content-type") ?? "", /^image\/svg\+xml\b/i, "The favicon MIME type must match its format");
+
   const missing = await fetch(`${server.baseUrl}/not-an-allowlisted-route`);
   assert.equal(missing.status, 404, "Unknown route must return 404");
   assert.match(await missing.text(), /Page not found/i, "Unknown route must use the branded 404");
@@ -173,14 +186,24 @@ try {
     const h1 = tags(html, "h1");
     const canonical = linkHref(html, "canonical");
     const robots = metaContent(html, "robots") ?? "";
-    const expectedUrl = path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${path}`;
+    const expectedUrl = localizedUrl(path);
     const shouldIndex = SITE_INDEXING_ENABLED && route.indexableAtLaunch;
+    const htmlLanguage = html.match(/<html\b[^>]*\blang=["']([^"']+)["']/i)?.[1];
+    const htmlDirection = html.match(/<html\b[^>]*\bdir=["']([^"']+)["']/i)?.[1];
+    const faviconTag = html.match(/<link(?=[^>]*\brel=["']icon["'])[^>]*>/i)?.[0] ?? "";
     assert.ok(title, `${path} needs a title`);
     assert.ok(title.length <= 60, `${path} title must be <=60 characters; got ${title.length}`);
     assert.ok(description, `${path} needs a meta description`);
     assert.ok(description.length <= 160, `${path} description must be <=160 characters; got ${description.length}`);
     assert.equal(h1.length, 1, `${path} must have exactly one H1`);
+    assert.equal(htmlLanguage, DEFAULT_LOCALE.htmlLang, `${path} HTML language must match the default locale`);
+    assert.equal(htmlDirection, DEFAULT_LOCALE.direction, `${path} text direction must match the default locale`);
     assert.equal(canonical, expectedUrl, `${path} canonical mismatch`);
+    assert.match(faviconTag, /\bhref=["']\/favicon\.svg["']/i, `${path} must link the canonical favicon`);
+    assert.match(faviconTag, /\btype=["']image\/svg\+xml["']/i, `${path} favicon type must match the SVG response`);
+    if (LOCALES.length === 1) {
+      assert.doesNotMatch(html, /\bhreflang=/i, `${path} must not emit hreflang before an equivalent second locale exists`);
+    }
     assert.match(robots, shouldIndex ? /\bindex\b/i : /\bnoindex\b/i, `${path} robots index state mismatch`);
     assert.match(robots, shouldIndex ? /\bfollow\b/i : /\bnofollow\b/i, `${path} robots follow state mismatch`);
     assert.ok(metaContent(html, "og:title", "property"), `${path} needs og:title`);
@@ -285,7 +308,7 @@ const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
   .sort();
 const expectedSitemap = ROUTES
   .filter((route) => route.indexableAtLaunch)
-  .map((route) => route.path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`)
+  .map((route) => localizedUrl(route.path))
   .sort();
 assert.deepEqual(
   sitemapUrls,
