@@ -2,104 +2,87 @@
 
 Date: 2026-08-20
 
-Owner: Asphalt Calculator Editorial Team
+Updated: 2026-08-24
 
-Status: GitHub and Vercel launch candidate
+Status: static-first production architecture with an unreleased German/French
+pilot
 
 ## Product boundary
 
-The first release is a static-first, login-free planning tool. It performs all
-calculations in the browser and sends no project inputs to a server. It does not
-include accounts, payments, a contact form, outbound email, a remote database,
-contractor lead capture, advertising, or paid APIs. A public inbound support
-alias is isolated from calculator inputs and forwards to a monitored mailbox.
-GA4 is isolated to the exact canonical production origin and receives page
-paths without calculator share-link queries. It loads automatically when its
-public measurement ID is configured; advertising personalization and Google
-signals remain disabled.
+The site is a login-free planning tool. It has no accounts, payments, contact
+form, outbound email, remote database, lead capture, advertising, or paid API.
+Calculator inputs remain in the browser. GA4 is isolated to the canonical
+production origin, strips calculator share queries from page paths, and keeps
+advertising personalization and Google signals disabled.
 
-The UI renders meaningful explanatory HTML on the server. Interactive fields use
-small client components backed by pure functions in `lib/calculations.ts`.
-Native Next.js is the build system; all product routes prerender to static HTML
-and Vercel serves them from its CDN without an application data layer.
+Next.js prerenders useful explanatory HTML. Small client components import pure
+formula and validation functions from `lib/calculations.ts`; they do not own a
+second calculation implementation. Vercel serves the static build without an
+application data layer.
 
-## ShipAny Two decision
+## Independent implementation decision
 
-Read-only audit on 2026-08-18:
+ShipAny Two was not present in the private vendor workspace and no separate
+purchase artifact was available for audit. A ShipAny One checkout existed only
+as private licensed reference. No vendor source was copied or modified. The
+independent Next.js implementation remains the lowest-maintenance choice for a
+small calculator and avoids public licensed-source leakage.
 
-- expected vendor root: `C:\web-new\vendor-private\shipany`;
-- present template: `C:\web-new\vendor-private\shipany\shipany-one`;
-- present template commit: `e922c27e7977a6428b42bb7c59618463f393caab`
-  on clean `main` tracking `origin/main`;
-- present template remotes: fetch from
-  `https://github.com/shipany-ai/shipany-one.git`; push is deliberately disabled
-  as `disabled://licensed-template-source`;
-- local authorization basis: `shipany-one/LICENSE`, last updated 2024-12-30,
-  permits commercial applications but prohibits public source redistribution,
-  standalone resale, attribution removal, and credential sharing;
-- ShipAny Two local path: not present;
-- ShipAny Two local commit: not available;
-- ShipAny Two local license or purchase-authorization file: not available;
-- ShipAny Two local Git remote configuration: not available;
-- vendor policy found in `C:\web-new\vendor-private\README.md`: commercial
-  applications are permitted, but public redistribution of boilerplate source
-  is prohibited and required notices must be retained.
+## Route and locale architecture
 
-The user reports access to ShipAny Two, but there is no local checkout or
-separate local purchase artifact to audit. No ShipAny source was read for
-implementation, copied, or modified for this product; the ShipAny One checks
-above were read-only boundary and authorization checks.
+`site-config.mjs` is the canonical manifest for origin, routes, index policy,
+locales, localized path mapping, and equivalent-page alternates. The sitemap
+generator, metadata, and release audit consume that contract.
 
-| Option | First view & static SEO | Maintenance / dependencies | Testing & security | Private-source leakage | SaaS fit | Decision |
-| --- | --- | --- | --- | --- | --- | --- |
-| Independent lightweight implementation | Small client surface; server-rendered explanatory HTML | Lowest; only the local site runtime | Pure calculation tests and bounded route audits | None | Exactly matches a no-account calculator | **Selected** |
-| Legally derive selected ShipAny Two parts | Potentially good, but only after tracing copied modules and notices | Higher boundary and upgrade bookkeeping | Requires license, dependency, and attribution review | Material unless every copied boundary is proven | No necessary feature identified | Rejected |
-| Use ShipAny Two as the complete base | Likely carries broad SaaS surface beyond the tool | Highest dependency and update load | Larger authentication/payment/database test matrix | Highest public-repository risk | Accounts, billing, and database are explicitly out of scope | Rejected |
+Multiple root-layout route groups emit the right server-side document
+language while preserving stable public URLs:
 
-The absence of a local, auditable ShipAny Two checkout is an additional hard
-reason not to derive from it. Even if it is placed in `vendor-private` later,
-the first release has no product need that justifies the extra boundary.
+- `app/(en)` owns all unprefixed English routes;
+- `app/(de)` owns the German prefix;
+- `app/(fr)` owns the French prefix;
+- `app/_components/DocumentLayout.tsx` owns the shared document shell;
+- `app/global-not-found.tsx` provides the global branded 404 required by the
+  multi-root layout design.
 
-## Page and intent matrix
+The architecture does not infer locale from a request header or redirect by
+browser language. A language switcher links only declared equivalents.
 
-| Route | Primary user decision | Search intent boundary | Intended production index state |
-| --- | --- | --- | --- |
-| `/` | Choose a workflow | Site overview; not a duplicate calculator | Index |
-| `/asphalt-calculator` | Estimate volume, weight, tonnage, waste, and optional material cost | `asphalt calculator`, `asphalt tonnage calculator`, `blacktop calculator` | Index |
-| `/asphalt-driveway-cost-calculator` | Combine material with user-entered preparation, paving, delivery, and other allowances | `asphalt driveway cost calculator`, `asphalt cost per square foot` | Index |
-| `/methodology` | Audit formulas, defaults, sources, rounding, and limits | Supporting trust document | Index |
-| `/about` | Understand authorship, scope, and corrections policy | Supporting trust document | Index |
-| `/privacy` | Understand local processing and data practices | Legal/support | Noindex |
-| `/terms` | Understand estimate and liability limits | Legal/support | Noindex |
+| Route | Primary task | Index state |
+| --- | --- | --- |
+| `/` | Choose a workflow | Index |
+| `/asphalt-calculator` | Estimate material volume, mass, order quantity, and optional material cost | Index |
+| `/asphalt-driveway-cost-calculator` | Combine material with user-entered project allowances | Index |
+| `/asphalt-weight-calculator` | Convert a known compacted volume to mass and unit weight | Index |
+| `/how-to-calculate-asphalt-tonnage` | Learn and reproduce the tonnage method | Index |
+| `/de/asphalt-rechner` | Perform the equivalent metric material estimate in German | Index |
+| `/fr/calcul-enrobe` | Perform the equivalent metric material estimate in French | Index |
+| `/methodology` | Audit formulas, defaults, sources, and limits | Index |
+| `/about` | Understand scope, authorship, and corrections | Index |
+| `/privacy` | Understand local processing and data practices | Noindex |
+| `/terms` | Understand estimate and liability limits | Noindex |
 
-All routes remain `noindex, nofollow` for the first production candidate and
-`robots.txt` disallows crawling. The public routes switch to index/follow only
-after the custom domain, HTTPS, canonical redirect, production routes, and
-analytics behavior passes online verification.
+Only the English, German, and French material-calculator routes are declared
+equivalent. Other pages remain English-only and emit no hreflang.
 
 ## Calculation authority
 
-`lib/calculations.ts` owns formulas, conversions, validation limits, and cost
-composition. Calculator components may format results but must not reimplement
-math. This keeps unit tests independent from layout and makes all assumptions
-reviewable.
+The material workflow computes area, compacted volume, base weight, short tons
+and metric tonnes, order allowance, and optional unit-price cost. The driveway
+workflow adds only user-entered rates and fixed allowances. The known-volume
+workflow converts compacted cubic yards or cubic metres into mass and unit
+weight. The guide reuses the material calculator and does not duplicate math.
 
-The material workflow computes:
+Localized copy may format units and numbers, but formulas, validation limits,
+and conversions remain in `lib/calculations.ts`.
 
-1. area from a rectangle or a user-supplied known area;
-2. compacted volume from area × thickness;
-3. base weight from volume × user-editable density;
-4. short tons and metric tonnes from base weight;
-5. order quantity by multiplying by `1 + waste% / 100`;
-6. optional material cost from order quantity × the user-entered unit price.
+## Generated and release boundary
 
-The driveway workflow adds only user-entered area rates and fixed allowances.
-It does not infer labor, equipment, taxes, permits, minimum orders, site
-conditions, or a national price.
+`public/robots.txt` and `public/sitemap.xml` are generated from the route
+manifest and must remain synchronized. The site audit checks every allowlisted
+route, route language, canonical, index policy, reciprocal hreflang, sitemap
+parity, FAQ structure, internal links, 404 behavior, canonical-host redirect,
+headers, analytics boundary, and public-file allowlist.
 
-## Rollback
-
-The starter-only baseline is commit `7b72f7e`; the reviewed local product is
-commit `2a52067`. Launch changes are isolated on `agent/launch-asphalt-top`.
-Vercel rollback uses the previous production deployment; Git rollback uses the
-previous commit. No other workspace or vendor repository needs to change.
+The localization branch starts from production `main` commit `ddab044` and is
+isolated on `agent/de-fr-locales`. Production deployment is a separate,
+explicitly authorized operation. Rollback does not move existing English URLs.

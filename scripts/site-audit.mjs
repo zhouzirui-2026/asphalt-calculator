@@ -7,6 +7,11 @@ import { createServer } from "node:net";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 import {
+  canonicalUrl,
+  DEFAULT_LOCALE,
+  languageAlternates,
+  localeForCode,
+  LOCALES,
   PUBLIC_FILE_ALLOWLIST,
   ROUTES,
   SITE_INDEXING_ENABLED,
@@ -15,6 +20,12 @@ import {
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const routePaths = ROUTES.map((route) => route.path);
+
+assert.ok(LOCALES.length > 0, "At least one launch-ready locale is required");
+assert.equal(LOCALES[0], DEFAULT_LOCALE, "The default locale must lead the locale registry");
+assert.equal(DEFAULT_LOCALE.pathPrefix, "", "Default-language URLs must remain unprefixed");
+assert.equal(new Set(LOCALES.map((locale) => locale.code)).size, LOCALES.length, "Locale codes must be unique");
+assert.equal(new Set(LOCALES.map((locale) => locale.pathPrefix)).size, LOCALES.length, "Locale path prefixes must be unique");
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -40,6 +51,19 @@ function metaContent(html, key, attribute = "name") {
 function linkHref(html, rel) {
   const tag = html.match(new RegExp(`<link(?=[^>]*\\brel=["']${escapeRegex(rel)}["'])[^>]*>`, "i"))?.[0];
   return tag?.match(/\bhref=["']([^"']*)["']/i)?.[1] ?? null;
+}
+
+function alternateHrefs(html) {
+  return Object.fromEntries(
+    [...html.matchAll(/<link\b(?=[^>]*\brel=["']alternate["'])[^>]*>/gi)]
+      .map((match) => {
+        const tag = match[0];
+        const language = tag.match(/\bhreflang=["']([^"']+)["']/i)?.[1];
+        const href = tag.match(/\bhref=["']([^"']+)["']/i)?.[1];
+        return language && href ? [language, href] : null;
+      })
+      .filter(Boolean),
+  );
 }
 
 function tags(html, tagName) {
@@ -119,7 +143,7 @@ async function routeFiles(dirUrl, prefix = "") {
     const nestedUrl = new URL(`${entry.name}/`, dirUrl);
     try {
       await stat(new URL("page.tsx", nestedUrl));
-      found.push(nestedPrefix);
+      if (nestedPrefix) found.push(nestedPrefix);
     } catch {
       // A directory without page.tsx can still contain nested route segments.
     }
@@ -151,6 +175,10 @@ try {
     pages.set(path, await response.text());
   }
 
+  const favicon = await fetch(`${server.baseUrl}/favicon.svg`);
+  assert.equal(favicon.status, 200, "The declared favicon must return 200");
+  assert.match(favicon.headers.get("content-type") ?? "", /^image\/svg\+xml\b/i, "The favicon MIME type must match its format");
+
   const missing = await fetch(`${server.baseUrl}/not-an-allowlisted-route`);
   assert.equal(missing.status, 404, "Unknown route must return 404");
   assert.match(await missing.text(), /Page not found/i, "Unknown route must use the branded 404");
@@ -173,14 +201,31 @@ try {
     const h1 = tags(html, "h1");
     const canonical = linkHref(html, "canonical");
     const robots = metaContent(html, "robots") ?? "";
-    const expectedUrl = path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${path}`;
+    const expectedUrl = canonicalUrl(path);
     const shouldIndex = SITE_INDEXING_ENABLED && route.indexableAtLaunch;
+    const routeLocale = localeForCode(route.localeCode);
+    const htmlLanguage = html.match(/<html\b[^>]*\blang=["']([^"']+)["']/i)?.[1];
+    const htmlDirection = html.match(/<html\b[^>]*\bdir=["']([^"']+)["']/i)?.[1];
+    const faviconTag = html.match(/<link(?=[^>]*\brel=["']icon["'])[^>]*>/i)?.[0] ?? "";
     assert.ok(title, `${path} needs a title`);
     assert.ok(title.length <= 60, `${path} title must be <=60 characters; got ${title.length}`);
     assert.ok(description, `${path} needs a meta description`);
     assert.ok(description.length <= 160, `${path} description must be <=160 characters; got ${description.length}`);
     assert.equal(h1.length, 1, `${path} must have exactly one H1`);
+    assert.equal(htmlLanguage, routeLocale.htmlLang, `${path} HTML language must match its route locale`);
+    assert.equal(htmlDirection, routeLocale.direction, `${path} text direction must match its route locale`);
     assert.equal(canonical, expectedUrl, `${path} canonical mismatch`);
+    assert.match(faviconTag, /\bhref=["']\/favicon\.svg["']/i, `${path} must link the canonical favicon`);
+    assert.match(faviconTag, /\btype=["']image\/svg\+xml["']/i, `${path} favicon type must match the SVG response`);
+    if (route.alternateGroup) {
+      assert.deepEqual(
+        alternateHrefs(html),
+        languageAlternates(route.alternateGroup),
+        `${path} must emit the complete reciprocal hreflang set`,
+      );
+    } else {
+      assert.doesNotMatch(html, /\bhreflang=/i, `${path} must not emit hreflang without equivalent localized content`);
+    }
     assert.match(robots, shouldIndex ? /\bindex\b/i : /\bnoindex\b/i, `${path} robots index state mismatch`);
     assert.match(robots, shouldIndex ? /\bfollow\b/i : /\bnofollow\b/i, `${path} robots follow state mismatch`);
     assert.ok(metaContent(html, "og:title", "property"), `${path} needs og:title`);
@@ -235,6 +280,41 @@ try {
   assert.equal(palletLinks.length, 1, "Homepage must contain exactly one crawlable Pallet Calculator link");
   assert.match(homeHtml, /Another tool we maintain/i, "Owned-site relationship must be visible beside the reciprocal link");
 
+  for (const synonymOnlyRoute of [
+    "/asphalt-tonnage-calculator",
+    "/blacktop-calculator",
+    "/asphalt-calculator-online",
+    "/asphalt-driveway-calculator",
+  ]) {
+    assert.ok(!routePaths.includes(synonymOnlyRoute), `${synonymOnlyRoute} must not become a synonym-only route`);
+  }
+
+  const materialHtml = pages.get("/asphalt-calculator");
+  assert.ok(materialHtml, "Material calculator HTML must be available");
+  assert.match(materialHtml, /Asphalt tonnage and blacktop use the same workflow/i, "Material page must explain its synonym boundary");
+
+  const weightHtml = pages.get("/asphalt-weight-calculator");
+  assert.ok(weightHtml, "Weight calculator HTML must be available");
+  assert.match(weightHtml, /id=["']weight-volume["']/i, "Weight calculator must render its volume input");
+  assert.match(weightHtml, /Volume and density must describe the same state/i, "Weight page must disclose the matching-condition boundary");
+
+  const tonnageGuideHtml = pages.get("/how-to-calculate-asphalt-tonnage");
+  assert.ok(tonnageGuideHtml, "Tonnage guide HTML must be available");
+  assert.match(tonnageGuideHtml, /US short tons = area ft/i, "Tonnage guide must render the answer-first formula");
+  assert.match(tonnageGuideHtml, /Calculate asphalt tons in five steps/i, "Tonnage guide must render the visible method");
+
+  const germanHtml = pages.get("/de/asphalt-rechner");
+  assert.ok(germanHtml, "German material calculator HTML must be available");
+  assert.match(germanHtml, /Metrische Materialplanung/i, "German route must render localized task copy");
+  assert.match(germanHtml, /Tonnen = Fläche \(m²\)/i, "German route must render the metric formula");
+  assert.match(germanHtml, /value=["']2323["']/i, "German route must server-render the metric density default");
+
+  const frenchHtml = pages.get("/fr/calcul-enrobe");
+  assert.ok(frenchHtml, "French material calculator HTML must be available");
+  assert.match(frenchHtml, /Préparation métrique du matériau/i, "French route must render localized task copy");
+  assert.match(frenchHtml, /Tonnes = surface \(m²\)/i, "French route must render the metric formula");
+  assert.match(frenchHtml, /value=["']2323["']/i, "French route must server-render the metric density default");
+
   const privacyHtml = pages.get("/privacy");
   assert.ok(privacyHtml, "Privacy HTML must be available for support-email audit");
   assert.match(privacyHtml, /Cloudflare Email Routing/i, "Privacy policy must disclose the inbound email processor");
@@ -267,13 +347,28 @@ const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
   .sort();
 const expectedSitemap = ROUTES
   .filter((route) => route.indexableAtLaunch)
-  .map((route) => route.path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`)
+  .map((route) => canonicalUrl(route.path))
   .sort();
 assert.deepEqual(
   sitemapUrls,
   expectedSitemap,
   "Sitemap must contain only exact self-canonical production URLs",
 );
+
+for (const route of ROUTES.filter((candidate) => candidate.indexableAtLaunch && candidate.alternateGroup)) {
+  const routeBlock = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
+    .find((match) => match[1].includes(`<loc>${canonicalUrl(route.path)}</loc>`))?.[1];
+  assert.ok(routeBlock, `${route.path} must have a sitemap URL block`);
+  const sitemapAlternates = Object.fromEntries(
+    [...routeBlock.matchAll(/<xhtml:link\b[^>]*hreflang="([^"]+)"[^>]*href="([^"]+)"[^>]*\/>/g)]
+      .map((match) => [match[1], match[2]]),
+  );
+  assert.deepEqual(
+    sitemapAlternates,
+    languageAlternates(route.alternateGroup),
+    `${route.path} sitemap alternates must match the HTML hreflang contract`,
+  );
+}
 
 const publicRoot = new URL("../public/", import.meta.url);
 const publicFiles = (await filesRecursively(publicRoot))

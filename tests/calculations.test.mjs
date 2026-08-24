@@ -2,13 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   CM_PER_IN,
+  CUBIC_M_PER_CUBIC_YD,
   DEFAULT_DENSITY_LB_FT3,
   KG_M3_PER_LB_FT3,
   SHORT_TONS_PER_METRIC_TONNE,
   SQ_FT_PER_SQ_M,
+  calculateAsphaltWeight,
   calculateDrivewayCost,
   calculateMaterial,
   parseDecimalInput,
+  validateAsphaltWeightInput,
   validateDrivewayCostInput,
   validateMaterialInput,
 } from "../lib/calculations.ts";
@@ -126,6 +129,63 @@ test("area conversion is exact enough for common field inputs", () => {
   });
   assert.ok(Math.abs(result.areaSqFt - 100 * SQ_FT_PER_SQ_M) < 1e-10);
   assert.ok(Math.abs(result.areaSqM - 100) < 1e-10);
+});
+
+test("converts a known cubic-yard asphalt volume to weight and unit weight", () => {
+  const result = calculateAsphaltWeight({
+    unitSystem: "us",
+    volume: 1,
+    density: DEFAULT_DENSITY_LB_FT3,
+  });
+  assert.equal(result.volumeCubicFt, 27);
+  assert.equal(result.weightLb, 3_915);
+  assert.equal(result.shortTons, 1.9575);
+  assert.equal(result.shortTonsPerCubicYd, 1.9575);
+  assert.ok(Math.abs(result.metricTonnesPerCubicM - 2.322677189224) < 1e-12);
+});
+
+test("known-volume weight conversion is equivalent in US and metric units", () => {
+  const us = calculateAsphaltWeight({
+    unitSystem: "us",
+    volume: 8.5,
+    density: DEFAULT_DENSITY_LB_FT3,
+  });
+  const metric = calculateAsphaltWeight({
+    unitSystem: "metric",
+    volume: 8.5 * CUBIC_M_PER_CUBIC_YD,
+    density: DEFAULT_DENSITY_LB_FT3 * KG_M3_PER_LB_FT3,
+  });
+  assert.ok(Math.abs(metric.weightLb - us.weightLb) < 1e-9);
+  assert.ok(Math.abs(metric.shortTons - us.shortTons) < 1e-12);
+  assert.ok(Math.abs(metric.metricTonnes - us.metricTonnes) < 1e-12);
+});
+
+test("known-volume validation rejects invalid values and enforces its boundary", () => {
+  assert.deepEqual(validateAsphaltWeightInput({
+    unitSystem: "us",
+    volume: 10_000_000,
+    density: 250,
+  }), {});
+  assert.ok(validateAsphaltWeightInput({
+    unitSystem: "us",
+    volume: 10_000_001,
+    density: 145,
+  }).volume);
+  assert.ok(validateAsphaltWeightInput({
+    unitSystem: "metric",
+    volume: 0,
+    density: 10,
+  }).volume);
+  assert.ok(validateAsphaltWeightInput({
+    unitSystem: "metric",
+    volume: 1,
+    density: 10,
+  }).density);
+  assert.throws(() => calculateAsphaltWeight({
+    unitSystem: "us",
+    volume: Number.POSITIVE_INFINITY,
+    density: 145,
+  }), RangeError);
 });
 
 test("rejects zero, negative, non-finite, and out-of-range material inputs", () => {

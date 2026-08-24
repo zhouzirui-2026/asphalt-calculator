@@ -50,6 +50,8 @@ export function SiteShell({
             <p>Transparent planning math for asphalt projects.</p>
           </div>
           <nav aria-label="Footer navigation">
+            <Link href="/asphalt-weight-calculator">Weight calculator</Link>
+            <Link href="/how-to-calculate-asphalt-tonnage">Tonnage formula</Link>
             <Link href="/about">About</Link>
             <Link href="/methodology">Methodology</Link>
             <a href="mailto:support@asphalt-calculator.top">Support</a>

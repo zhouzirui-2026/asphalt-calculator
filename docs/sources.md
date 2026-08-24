@@ -21,6 +21,12 @@ user to replace it.
 Actual mix density varies. A supplier's job-mix or measured density should
 replace the default when available.
 
+The known-volume weight converter uses the same editable compacted density. Its
+reported short tons per cubic yard and metric tonnes per cubic meter are derived
+unit conversions, not additional published density claims. Volume and density
+must describe the same material condition; the interface is framed around
+compacted in-place values.
+
 ## Unit conversions
 
 - NIST defines the international foot as exactly 0.3048 meter and provides the

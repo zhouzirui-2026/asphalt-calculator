@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../lib/seo";
-import { AsphaltEstimator } from "../_components/AsphaltEstimator";
-import { FaqSection, type FaqItem } from "../_components/FaqSection";
-import { SiteShell } from "../_components/SiteShell";
+import { languageAlternates } from "../../../site-config.mjs";
+import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../../lib/seo";
+import { AsphaltEstimator } from "../../_components/AsphaltEstimator";
+import { FaqSection, type FaqItem } from "../../_components/FaqSection";
+import { LanguageSwitcher } from "../../_components/LanguageSwitcher";
+import { SiteShell } from "../../_components/SiteShell";
+
+const alternates = languageAlternates("materialCalculator");
 
 export const metadata: Metadata = {
   title: "Asphalt Calculator: Tonnage, Volume & Cost",
   description:
-    "Calculate asphalt area, volume, weight, short tons, metric tonnes, waste, and optional material cost with editable density and visible formulas.",
-  alternates: { canonical: "/asphalt-calculator" },
+    "Calculate asphalt or blacktop volume, weight, short tons, metric tonnes, waste, and optional material cost with editable density and visible formulas.",
+  alternates: { canonical: "/asphalt-calculator", languages: alternates },
   openGraph: {
     type: "website",
     url: "/asphalt-calculator",
@@ -61,13 +65,14 @@ export default function AsphaltCalculatorPage() {
           <p className="eyebrow">Material workflow</p>
           <h1>Asphalt Calculator</h1>
           <p className="tool-intro__lede">
-            Estimate asphalt volume, weight, and tonnage from dimensions or a
-            known area. Adjust density, waste, and material price instead of
-            relying on hidden assumptions.
+            Estimate asphalt or blacktop volume, weight, and tonnage from
+            dimensions or a known area. Adjust density, waste, and material
+            price instead of relying on hidden assumptions.
           </p>
-          <div className="fact-strip" aria-label="Calculator scope">
-            <span>US + metric</span><span>Short tons + tonnes</span><span>Share + print locally</span>
+          <div className="fact-strip" role="list" aria-label="Calculator scope">
+            <span role="listitem">US + metric</span><span role="listitem">Short tons + tonnes</span><span role="listitem">Share + print locally</span>
           </div>
+          <LanguageSwitcher currentLocale="en" />
         </header>
 
         <div className="shell calculator-wrap">
@@ -104,6 +109,30 @@ export default function AsphaltCalculatorPage() {
                 {" · "}
                 <a href="https://www.epa.gov/sites/production/files/2015-04/documents/methodology_enivro_footprint.pdf">Review the EPA methodology table</a>
               </p>
+            </section>
+
+            <section className="content-section" aria-labelledby="one-material-workflow">
+              <p className="eyebrow">One task, several common names</p>
+              <h2 id="one-material-workflow">Asphalt tonnage and blacktop use the same workflow</h2>
+              <p>
+                An asphalt tonnage calculator emphasizes the final weight, while
+                a blacktop calculator uses an informal name for the same paving
+                material task. Both still require area, compacted thickness, and
+                compacted density. This page keeps those equivalent searches on
+                one calculator so the assumptions and shared result stay consistent.
+              </p>
+              <div className="comparison-grid">
+                <div>
+                  <h3>Starting with area and depth?</h3>
+                  <p>Use the calculator above for volume, base tonnage, an explicit allowance, and optional supplier price.</p>
+                  <Link href="/how-to-calculate-asphalt-tonnage">Follow the tonnage formula step by step →</Link>
+                </div>
+                <div>
+                  <h3>Starting with known volume?</h3>
+                  <p>Skip the area and thickness fields and convert cubic yards or cubic meters directly to weight.</p>
+                  <Link href="/asphalt-weight-calculator">Convert asphalt volume to weight →</Link>
+                </div>
+              </div>
             </section>
 
             <FaqSection items={faqs} />

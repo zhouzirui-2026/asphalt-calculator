@@ -1,49 +1,50 @@
-# Launch handoff
+# Product and internationalization handoff
 
-Updated: 2026-08-20
+Updated: 2026-08-24
 
-Branch: `agent/enable-production-indexing`
+Branch: `agent/de-fr-locales`
 
-Baseline: `5f9ec8d` on public `main`
+Worktree: `C:\web-new\workspaces\asphalt-calculator-de-fr`
 
-## Current state
+Baseline: public `main` at `ddab044`; prerequisite commits integrated as
+`6a9b7d4` and `37ccd12`
 
-The launch candidate is a native Next.js 16 static-first site targeting
-`https://asphalt-calculator.top`. Every product route is prerendered; calculator
-inputs, unit conversion, cost estimates, sharing, and printing run in the
-browser. The product has no accounts, remote database, payment, contact form,
-outbound email service, or private vendor dependency. The documented inbound
-support alias is separate from calculator operation.
+## Implemented release candidate
 
-Implemented routes:
+This branch combines the reviewed English long-tail work with a two-page
+international pilot. It now has 11 business routes:
 
-- `/`
-- `/asphalt-calculator`
-- `/asphalt-driveway-cost-calculator`
-- `/methodology`
-- `/about`
-- `/privacy`
-- `/terms`
+- English: `/`, `/asphalt-calculator`,
+  `/asphalt-driveway-cost-calculator`, `/asphalt-weight-calculator`,
+  `/how-to-calculate-asphalt-tonnage`, `/methodology`, `/about`, `/privacy`,
+  and `/terms`;
+- German: `/de/asphalt-rechner`;
+- French: `/fr/calcul-enrobe`.
 
-The launch uses GitHub for public source, Vercel for builds and hosting, and
-Cloudflare as authoritative DNS. The registrar retains domain ownership and NS
-control. The executed evidence and rollback path are in `release-record.md`.
-`SITE_INDEXING_ENABLED` is enabled on the dedicated production-indexing branch
-after the custom domain, HTTPS, canonical host, all routes, security headers,
-calculator flows, and analytics behavior passed on production.
+All business routes prerender. Calculations, validation, result formatting,
+sharing, and printing execute in the browser against pure functions from
+`lib/calculations.ts`. The product still has no account, database, payment,
+contact form, outbound email service, paid API, advertising, or private vendor
+runtime.
 
-## Analytics boundary
+The localized calculator is metric-first and includes native labels, errors,
+examples, explanations, FAQ, number formatting, navigation, and a mapped
+language switcher. Multiple root layouts make the server HTML language correct.
+Only the three true calculator equivalents emit reciprocal hreflang and
+sitemap alternates.
 
-GA4 is configured only through `NEXT_PUBLIC_GA_MEASUREMENT_ID`. The Google tag
-loads automatically on the exact canonical production origin and is omitted in
-local and Preview environments. Page locations exclude query strings and
-fragments so calculator/share parameters are not sent. Advertising
-personalization and Google signals remain disabled.
+## Evidence and decisions
 
-Measurement IDs are public site identifiers, but login sessions, API tokens,
-cookies, analytics exports, and credentials must never be committed.
+- Keyword and SERP observations: `docs/international-keyword-research-2026-08-24.md`
+- German/French task contracts: `docs/localized-page-briefs.md`
+- Locale and release rules: `docs/internationalization-readiness.md`
+- Search-provider snapshot: `docs/search-status-2026-08-24.md`
+- English long-tail task map: `docs/long-tail-page-plan.md`
 
-## Local verification
+German and French are a reversible evidence-gathering pilot. Spanish,
+Portuguese, Italian, Dutch, and Polish remain deferred.
+
+## Validation
 
 Run from a clean checkout:
 
@@ -53,36 +54,38 @@ npm run check
 npm test
 npm run build
 npm run audit:site
+npm run audit:artifact:render
 npm audit
 git diff --check
 ```
 
-The site audit starts the production Next.js server and verifies the seven
-allowlisted routes, metadata, canonical URLs, noindex/index policy, FAQ visible
-text versus JSON-LD, sitemap and robots output, internal links, 404 behavior,
-canonical-host redirect, security headers, public-file allowlist, and secret
-boundary across `.next`.
+At handoff time the final branch passed sync, lint, type checking, all 21 tests,
+production build, the 11-route repository audit, the generic rendered-artifact
+audit, `npm audit` with zero reported vulnerabilities, and `git diff --check`.
+Browser QA covered desktop, 390 px, and 320 px; calculation, invalid input,
+localized number/currency formatting, share state, reciprocal language links,
+HTML metadata, keyboard skip focus, horizontal overflow, page/console errors,
+and WCAG A/AA. Automated accessibility reported zero violations after the
+language-switcher contrast fix; gradient-backed result content still requires
+the recorded visual review because automated contrast could not determine its
+background.
 
-## Release sequence
+## Separate Naver task
 
-1. Push this branch to the public GitHub repository and create a draft PR.
-2. Deploy a Vercel Preview with indexing disabled and verify desktop/mobile.
-3. Configure the site-specific GA4 stream and Vercel public environment value.
-4. Merge the verified candidate, add the apex and `www` domains, then apply only
-   Vercel's exact DNS records at the authoritative DNS provider.
-5. Verify production HTTPS, redirects, metadata, routes, calculators, analytics,
-   and rollback evidence while indexing is still disabled.
-6. Enable indexing in a separate reviewed commit, rebuild, deploy, and verify
-   `robots.txt`, sitemap, page robots metadata, and canonicals.
+`agent/naver-verification` is isolated in
+`C:\web-new\workspaces\asphalt-calculator-naver-verify`. It adds the current
+Naver public meta proof and audit coverage. It must not be merged into this
+localization task. Verification and sitemap submission require a production
+deployment followed by an external Search Advisor action; production promotion
+has not been authorized by the localization request.
 
-Do not submit Search Console, Bing Webmaster Tools, IndexNow, directories,
-backlinks, or other external forms as part of this release. The separately
-authorized post-launch inbound support route does not send outbound email.
+## Release and rollback
 
-## Remaining non-blocking risk
+1. Review the final diff against `main` and obtain native-language approval.
+2. Push or open a draft PR only when authorized.
+3. Verify a Vercel Preview at desktop, 390 px, and 320 px.
+4. Merge and promote only with separate explicit authorization.
+5. Observe Day-2/7/28 locale outcomes before adding another language.
 
-- Automated browser coverage is Chromium-first; Safari and Firefox remain a
-  follow-up compatibility check.
-- Cost estimates depend on user-entered local rates and scope; the product does
-  not present them as contractor quotes.
-- The social card is larger than ideal but is not part of normal page rendering.
+Rollback is a Git revert or Vercel rollback to the prior deployment. Existing
+English URLs and canonicals remain stable.

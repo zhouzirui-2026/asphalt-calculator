@@ -2,12 +2,11 @@
 
 An English-first, US-market planning site for asphalt material and driveway
 cost allowances. It is responsive, accessible, login-free, and static-first.
-All seven routes are prerendered as HTML; calculator logic runs in the browser.
+All nine routes are prerendered as HTML; calculator logic runs in the browser.
 
-Status: authorized launch candidate for `https://asphalt-calculator.top`. The
-repository deliberately keeps `noindex, nofollow` and `Disallow: /` until the
-custom domain, HTTPS, canonical redirect, routes, and analytics behavior have
-been verified on Vercel.
+Status: the canonical production site is live at
+`https://asphalt-calculator.top`. Public product and trust routes are indexable;
+privacy and terms remain noindex.
 
 ## Routes
 
@@ -16,13 +15,19 @@ been verified on Vercel.
   waste, and optional material cost;
 - `/asphalt-driveway-cost-calculator` — material plus user-entered preparation,
   paving, delivery, and other allowances;
+- `/asphalt-weight-calculator` — known compacted volume to pounds, kilograms,
+  short tons, metric tonnes, and unit weight;
+- `/how-to-calculate-asphalt-tonnage` — answer-first formula guide, worked US
+  and metric examples, common errors, and the tested material calculator;
 - `/methodology` — formulas, conversions, default evidence, validation, and
   factual boundaries;
 - `/about`, `/privacy`, `/terms` — trust and legal support.
 
-The tonnage and blacktop synonym intents remain on `/asphalt-calculator`; there
-are no near-duplicate routes. See [docs/architecture.md](docs/architecture.md)
-for the intent matrix and ShipAny Two decision.
+The tonnage, blacktop, and online synonym intents remain on
+`/asphalt-calculator`; close “how to” questions share one guide. See
+[docs/long-tail-page-plan.md](docs/long-tail-page-plan.md) for the evidence and
+page map and [docs/architecture.md](docs/architecture.md) for the architecture
+and ShipAny Two decision.
 
 ## Local development
 
@@ -60,8 +65,8 @@ git diff --check
 ```
 
 `npm run check` verifies generated SEO files, lint, and TypeScript. The unit
-suite covers formulas, unit conversions, waste, cost, invalid inputs, and
-boundaries. The post-build audit renders every allowlisted route and checks
+suite covers formulas, unit conversions, known-volume weight, waste, cost,
+invalid inputs, and boundaries. The post-build audit renders every allowlisted route and checks
 metadata, a single H1, canonical URLs, noindex, social tags, structured data,
 visible FAQ parity, internal links, orphan routes, robots, sitemap, and the
 deployable-build secret/private-source boundary.
@@ -71,6 +76,9 @@ deployable-build secret/private-source boundary.
 - `lib/calculations.ts` — formulas, conversions, validation, and cost model;
 - `site-config.mjs` — route allowlist, staged origin, and public-file allowlist;
 - `scripts/generate-site-files.mjs` — `robots.txt` and `sitemap.xml` generator;
+- `scripts/render-audit-artifact.mjs` — ignored `dist/` adapter for exact rendered
+  HTML and public-client artifact auditing;
+- `site-policy.json` — versioned generic release-audit policy;
 - `docs/sources.md` — source record and unsourced-assumption policy;
 - `docs/launch-checklist.md` — required steps before any publication;
 - `docs/handoff.md` — current implementation and verification status.

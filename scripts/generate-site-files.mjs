@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { ROUTES, SITE_INDEXING_ENABLED, SITE_ORIGIN } from "../site-config.mjs";
+import {
+  canonicalUrl,
+  languageAlternates,
+  ROUTES,
+  SITE_INDEXING_ENABLED,
+  SITE_ORIGIN,
+} from "../site-config.mjs";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const checkOnly = process.argv.includes("--check");
@@ -24,18 +30,26 @@ const robots = SITE_INDEXING_ENABLED
 
 const sitemapEntries = ROUTES
   .filter((route) => route.indexableAtLaunch)
-  .map((route) => [
-    "  <url>",
-    `    <loc>${route.path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`}</loc>`,
-    `    <changefreq>${route.changefreq}</changefreq>`,
-    `    <priority>${route.priority}</priority>`,
-    "  </url>",
-  ].join("\n"))
+  .map((route) => {
+    const alternateLinks = route.alternateGroup
+      ? Object.entries(languageAlternates(route.alternateGroup)).map(([language, href]) => (
+          `    <xhtml:link rel="alternate" hreflang="${language}" href="${href}" />`
+        ))
+      : [];
+    return [
+      "  <url>",
+      `    <loc>${canonicalUrl(route.path)}</loc>`,
+      ...alternateLinks,
+      `    <changefreq>${route.changefreq}</changefreq>`,
+      `    <priority>${route.priority}</priority>`,
+      "  </url>",
+    ].join("\n");
+  })
   .join("\n");
 
 const sitemap = [
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-  "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">",
+  "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">",
   sitemapEntries,
   "</urlset>",
   "",

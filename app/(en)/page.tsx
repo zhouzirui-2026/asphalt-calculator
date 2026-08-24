@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../lib/seo";
-import { SiteShell } from "./_components/SiteShell";
+import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../lib/seo";
+import { SiteShell } from "../_components/SiteShell";
 
 export const metadata: Metadata = {
   title: "Asphalt Project Planning, Without Hidden Assumptions",
@@ -76,10 +76,11 @@ export default function Home() {
         <section className="section shell" aria-labelledby="choose-workflow">
           <div className="section-heading">
             <p className="eyebrow">Choose by job to be done</p>
-            <h2 id="choose-workflow">Two calculators, two clear decisions</h2>
+            <h2 id="choose-workflow">Start with the information you already have</h2>
             <p>
-              Near-synonyms stay in the material workflow. Cost planning gets a
-              separate page because it requires different inputs and caveats.
+              Equivalent asphalt, tonnage, and blacktop searches share one
+              material workflow. Separate pages exist only when the inputs or
+              the outcome genuinely change.
             </p>
           </div>
           <div className="workflow-grid">
@@ -103,6 +104,28 @@ export default function Home() {
               </p>
               <Link href="/asphalt-driveway-cost-calculator">
                 Open the cost calculator <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+            <article className="workflow-card workflow-card--sand">
+              <p className="card-index">Known volume / unit weight</p>
+              <h3>What does this asphalt volume weigh?</h3>
+              <p>
+                Convert compacted cubic yards or cubic meters directly into
+                pounds, kilograms, short tons, and metric tonnes.
+              </p>
+              <Link href="/asphalt-weight-calculator">
+                Open the weight calculator <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+            <article className="workflow-card workflow-card--surface">
+              <p className="card-index">Formula / worked examples</p>
+              <h3>How is asphalt tonnage calculated?</h3>
+              <p>
+                Follow area × thickness × density through US and metric
+                examples, then verify the inputs in the calculator.
+              </p>
+              <Link href="/how-to-calculate-asphalt-tonnage">
+                Read the tonnage guide <span aria-hidden="true">→</span>
               </Link>
             </article>
           </div>

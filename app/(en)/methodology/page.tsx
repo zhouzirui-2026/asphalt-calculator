@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../lib/seo";
-import { SiteShell } from "../_components/SiteShell";
+import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../../lib/seo";
+import { SiteShell } from "../../_components/SiteShell";
 
 export const metadata: Metadata = {
   title: "Methodology: Asphalt Estimate Formulas & Sources",
@@ -46,6 +46,11 @@ export default function MethodologyPage() {
           </ol>
         </section>
 
+        <section aria-labelledby="weight-conversion"><h2 id="weight-conversion">Known-volume weight conversion</h2>
+          <p>The asphalt weight workflow starts from compacted volume rather than area and thickness. It converts cubic yards or cubic meters to a common internal volume, multiplies by the user-entered compacted density, then reports pounds, kilograms, short tons, metric tonnes, short tons per cubic yard, and metric tonnes per cubic meter.</p>
+          <p>It does not add waste, select a mix, or turn the result into an order quantity. Those are separate project decisions.</p>
+        </section>
+
         <section aria-labelledby="density-source"><h2 id="density-source">Density default and its limit</h2>
           <p>The starting density is 145 lb/ft³ (about 2,323 kg/m³). It is a rounded planning value, not a specification.</p>
           <ul>
@@ -75,7 +80,7 @@ export default function MethodologyPage() {
 
         <section aria-labelledby="validation-rounding"><h2 id="validation-rounding">Validation, boundaries, and rounding</h2>
           <ul>
-            <li>Inputs and their converted or derived values must remain finite. Each dimension is capped at 1,000,000 ft (304,800 m); area is limited to 0.000001–100,000,000 ft²; compacted thickness is limited to 0.001–120 in; density must be 50–250 lb/ft³ equivalent.</li>
+            <li>Inputs and their converted or derived values must remain finite. Each dimension is capped at 1,000,000 ft (304,800 m); area is limited to 0.000001–100,000,000 ft²; known volume is capped at 10,000,000 yd³ equivalent; compacted thickness is limited to 0.001–120 in; density must be 50–250 lb/ft³ equivalent.</li>
             <li>Waste is limited to 0–100%; price and allowance fields reject negative and non-finite values.</li>
             <li>Calculations retain full floating-point precision. The interface rounds only displayed values, generally to two decimals and tonnage to three.</li>
           </ul>
@@ -83,7 +88,7 @@ export default function MethodologyPage() {
 
         <section aria-labelledby="not-design"><h2 id="not-design">What this methodology cannot decide</h2>
           <p>The calculator does not design pavement thickness, base, grading, drainage, compaction procedure, mix, reinforcement, edges, or traffic capacity. Those choices depend on site conditions and local requirements and belong with a qualified local professional.</p>
-          <div className="button-row"><Link className="button button--primary" href="/asphalt-calculator">Use the material calculator</Link><Link className="button button--secondary" href="/asphalt-driveway-cost-calculator">Build a driveway allowance</Link></div>
+          <div className="button-row"><Link className="button button--primary" href="/asphalt-calculator">Use the material calculator</Link><Link className="button button--secondary" href="/asphalt-weight-calculator">Convert known volume</Link><Link className="button button--secondary" href="/asphalt-driveway-cost-calculator">Build a driveway allowance</Link></div>
         </section>
       </main>
     </SiteShell>
