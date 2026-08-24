@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const navigation = [
   ["/asphalt-calculator", "Material calculator"],
@@ -23,20 +24,25 @@ export function SiteShell({
             <span className="brand__mark" aria-hidden="true">AC</span>
             <span>Asphalt Calculator</span>
           </Link>
-          <nav aria-label="Primary navigation">
-            <ul className="nav-list">
-              {navigation.map(([href, label]) => (
-                <li key={href}>
-                  <Link
-                    aria-current={currentPath === href ? "page" : undefined}
-                    href={href}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div className="site-header__controls">
+            {currentPath === "/asphalt-calculator" ? (
+              <LanguageSwitcher currentLocale="en" />
+            ) : null}
+            <nav aria-label="Primary navigation">
+              <ul className="nav-list">
+                {navigation.map(([href, label]) => (
+                  <li key={href}>
+                    <Link
+                      aria-current={currentPath === href ? "page" : undefined}
+                      href={href}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </div>
       </header>
       <div id="main-content" tabIndex={-1}>{children}</div>

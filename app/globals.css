@@ -52,6 +52,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   min-height: 78px; display: flex; align-items: center; justify-content: space-between;
   gap: 28px;
 }
+.site-header__controls {
+  display: flex; align-items: center; gap: 14px; margin-left: auto;
+}
 .brand {
   display: inline-flex; align-items: center; gap: 10px; color: var(--ink);
   font-weight: 760; letter-spacing: -0.02em; text-decoration: none; white-space: nowrap;
@@ -204,40 +207,67 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 .language-switcher {
+  position: relative;
+}
+
+.language-switcher details {
+  position: relative;
+}
+
+.language-switcher summary {
   align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1rem;
-  margin-top: 1rem;
-}
-
-.language-switcher > span {
-  color: var(--muted);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.language-switcher > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.language-switcher a {
-  align-items: center;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 999px;
-  display: inline-flex;
+  cursor: pointer;
+  display: flex;
+  gap: 0.45rem;
   min-height: 44px;
-  padding: 0.5rem 0.9rem;
+  padding: 0.5rem 0.8rem;
+  white-space: nowrap;
+}
+
+.language-switcher summary::-webkit-details-marker { display: none; }
+.language-switcher summary::marker { content: ""; }
+.language-switcher summary:hover,
+.language-switcher details[open] summary { border-color: #9f9a8f; }
+.language-switcher__prompt { color: var(--muted); font-size: 0.82rem; }
+.language-switcher summary strong { font-size: 0.88rem; }
+.language-switcher__chevron { font-size: 0.72rem; transition: transform 160ms ease; }
+.language-switcher details[open] .language-switcher__chevron { transform: rotate(180deg); }
+
+.language-switcher__menu {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 3px;
+  min-width: 190px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+}
+
+.language-switcher__menu a {
+  align-items: center;
+  border-radius: 7px;
+  display: inline-flex;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0.55rem 0.75rem;
   text-decoration: none;
 }
 
-.language-switcher a[aria-current="page"] {
+.language-switcher__menu a:hover { background: var(--paper); }
+.language-switcher__menu a[aria-current="page"] {
   background: var(--asphalt);
-  border-color: var(--asphalt);
   color: var(--white);
 }
+.language-switcher__code { color: var(--muted); font-size: 0.72rem; font-weight: 800; }
+.language-switcher__menu a[aria-current="page"] .language-switcher__code { color: #dce2df; }
 .scope-callout {
   display: grid; grid-template-columns: auto 1fr; gap: 12px 20px; max-width: 780px;
   margin-top: 30px; padding: 18px 20px; border-left: 5px solid var(--amber);
@@ -431,8 +461,12 @@ th { background: #e8e3d8; }
 
 @media (max-width: 840px) {
   .site-header__inner {
-    align-items: flex-start; flex-direction: column; gap: 10px; padding-block: 16px;
+    align-items: center; display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 16px; padding-block: 12px;
   }
+  .site-header__controls { display: contents; }
+  .site-header__controls > .language-switcher { grid-column: 2; grid-row: 1; }
+  .site-header__controls > nav:not(.language-switcher) { grid-column: 1 / -1; grid-row: 2; }
   .nav-list { flex-wrap: wrap; }
   .nav-list a { padding: 7px 10px; }
   .hero { grid-template-columns: 1fr; min-height: auto; padding-block: 58px 76px; }
@@ -448,6 +482,8 @@ th { background: #e8e3d8; }
   .shell { width: min(calc(100% - 28px), var(--shell)); }
   .brand { font-size: 0.95rem; }
   .brand__mark { width: 34px; height: 34px; }
+  .language-switcher__prompt { display: none; }
+  .language-switcher summary { padding-inline: 0.65rem; }
   .hero h1 { font-size: clamp(3.25rem, 17vw, 5rem); }
   .button-row { align-items: stretch; flex-direction: column; }
   .button { width: 100%; }

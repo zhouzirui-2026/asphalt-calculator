@@ -207,6 +207,7 @@ try {
     const htmlLanguage = html.match(/<html\b[^>]*\blang=["']([^"']+)["']/i)?.[1];
     const htmlDirection = html.match(/<html\b[^>]*\bdir=["']([^"']+)["']/i)?.[1];
     const faviconTag = html.match(/<link(?=[^>]*\brel=["']icon["'])[^>]*>/i)?.[0] ?? "";
+    const siteHeader = html.match(/<header\b[^>]*class=["']site-header["'][^>]*>[\s\S]*?<\/header>/i)?.[0] ?? "";
     assert.ok(title, `${path} needs a title`);
     assert.ok(title.length <= 60, `${path} title must be <=60 characters; got ${title.length}`);
     assert.ok(description, `${path} needs a meta description`);
@@ -223,8 +224,27 @@ try {
         languageAlternates(route.alternateGroup),
         `${path} must emit the complete reciprocal hreflang set`,
       );
+      const languageSwitcher = siteHeader.match(
+        /<nav\b[^>]*class=["']language-switcher["'][^>]*>[\s\S]*?<\/nav>/i,
+      )?.[0] ?? "";
+      assert.ok(languageSwitcher, `${path} must expose the language switcher in the site header`);
+      for (const [language, href] of Object.entries(languageAlternates(route.alternateGroup))) {
+        if (language === "x-default") continue;
+        const switcherHref = new URL(href).pathname;
+        const languageLink = new RegExp(
+          `<a(?=[^>]*\\bhref=["']${escapeRegex(switcherHref)}["'])(?=[^>]*\\bhreflang=["']${escapeRegex(language)}["'])[^>]*>`,
+          "i",
+        );
+        assert.match(languageSwitcher, languageLink, `${path} needs a header switcher link for ${language}`);
+      }
+      assert.equal(
+        [...languageSwitcher.matchAll(/<a\b(?=[^>]*\baria-current=["']page["'])[^>]*>/gi)].length,
+        1,
+        `${path} language switcher needs one current-language link`,
+      );
     } else {
       assert.doesNotMatch(html, /\bhreflang=/i, `${path} must not emit hreflang without equivalent localized content`);
+      assert.doesNotMatch(siteHeader, /\blanguage-switcher\b/i, `${path} must not show a language switcher without an equivalent page`);
     }
     assert.match(robots, shouldIndex ? /\bindex\b/i : /\bnoindex\b/i, `${path} robots index state mismatch`);
     assert.match(robots, shouldIndex ? /\bfollow\b/i : /\bnofollow\b/i, `${path} robots follow state mismatch`);
