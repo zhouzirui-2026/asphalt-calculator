@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { DirectoryBadges } from "./DirectoryBadges";
 
 const shellCopy = {
   de: {
@@ -82,6 +83,7 @@ export function LocalizedSiteShell({
             <Link href="/terms" hrefLang="en">{copy.terms}</Link>
           </nav>
           <p className="site-footer__notice">{copy.notice}</p>
+          <DirectoryBadges />
         </div>
       </footer>
     </>

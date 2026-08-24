@@ -183,6 +183,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .site-footer nav { display: grid; gap: 8px; }
 .site-footer nav a { width: fit-content; text-underline-offset: 4px; }
 .site-footer__notice { color: #939d99; }
+.directory-badges {
+  display: flex; grid-column: 1 / -1; flex-wrap: wrap; gap: 10px; align-items: center;
+}
+.directory-badges a { display: inline-flex; border-radius: 4px; line-height: 0; }
+.directory-badges img { display: block; width: auto; max-width: 100%; height: auto; max-height: 56px; }
 
 .page-main { padding-bottom: 72px; }
 .tool-intro { max-width: 920px; padding-block: 62px 42px; }

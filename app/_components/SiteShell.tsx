@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { DirectoryBadges } from "./DirectoryBadges";
 
 const navigation = [
   ["/asphalt-calculator", "Material calculator"],
@@ -68,6 +69,7 @@ export function SiteShell({
             Estimates are for planning only. Confirm requirements and prices
             with qualified local professionals.
           </p>
+          <DirectoryBadges />
         </div>
       </footer>
     </>
