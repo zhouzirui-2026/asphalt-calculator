@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../lib/seo";
-import { AsphaltWeightConverter } from "../_components/AsphaltWeightConverter";
-import { FaqSection, type FaqItem } from "../_components/FaqSection";
-import { SiteShell } from "../_components/SiteShell";
+import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../../lib/seo";
+import { AsphaltWeightConverter } from "../../_components/AsphaltWeightConverter";
+import { FaqSection, type FaqItem } from "../../_components/FaqSection";
+import { SiteShell } from "../../_components/SiteShell";
 
 export const metadata: Metadata = {
   title: "Asphalt Weight Calculator: Volume to Tons",

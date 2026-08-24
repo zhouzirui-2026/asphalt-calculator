@@ -1,89 +1,71 @@
-# Internationalization readiness
+# Internationalization release contract
 
 Date: 2026-08-24
 
-Status: technical preparation only; no non-English public locale is approved
+Status: German/French pilot implemented as a release candidate; not deployed
 
 ## Decision
 
-Keep the current US-English site unprefixed and publish no translated routes or
-hreflang yet. The first-party reports contain no search-performance evidence:
-Google shows 0 clicks and 0 impressions, Bing reports no available search
-performance, and Yandex has 0 searchable pages. The user-provided Semrush
-snapshot was scoped to the US English database. It cannot select a language.
+Keep US English unprefixed and add only two equivalent material-calculator
+pages:
 
-The production site also has only five indexable pages. The default expansion
-gate is 10–30 useful, maintained pages in the primary language or equivalent
-proven depth before localization. Pending long-tail work does not count as
-production evidence until it is reviewed and released.
+- English: `/asphalt-calculator`
+- German: `/de/asphalt-rechner`
+- French: `/fr/calcul-enrobe`
 
-## Implemented readiness contract
+The project still has no first-party international query or country demand:
+Google showed zero clicks and impressions in the short available window, Bing
+had no useful performance export, and Yandex had no searchable pages. The user
+nevertheless requested multilingual development, so this branch treats
+locale-specific Semrush estimates and live result review as authorization for
+a small, reversible experiment—not as evidence for broad translation.
 
-- `site-config.mjs` owns the launch-ready locale registry, default locale, text
-  direction, path prefix, and canonical locale URL helpers.
-- Only `en` is launch-ready. Unknown locale codes fail closed.
-- English canonicals stay unchanged and unprefixed.
-- The root layout derives `lang` and `dir` from the locale contract.
-- The release audit rejects premature hreflang while only one useful locale
-  exists and verifies the declared SVG favicon and MIME type.
-- The generated sitemap uses the same canonical URL helper, so the locale URL
-  contract and sitemap cannot silently diverge.
+## Implemented contract
 
-This infrastructure does not invent translated content, add public routes,
-change canonical URLs, alter sitemap membership, or redirect users by browser
-language.
+- `site-config.mjs` owns locale codes, labels, direction, path prefixes,
+  canonical URLs, route membership, and the equivalent-page map.
+- Multiple root layouts emit `lang=en`, `lang=de`, or `lang=fr` in server HTML;
+  all three remain left-to-right.
+- English canonicals stay unchanged. German and French use lowercase language
+  directories and native task slugs.
+- Only the three equivalent calculator pages emit reciprocal `en`, `de`, `fr`,
+  and `x-default` alternates. English-only pages emit no hreflang.
+- The sitemap uses the same route and alternate map and includes `xhtml:link`
+  parity for the equivalent cohort.
+- The language switcher maps only real equivalents; it never guesses a
+  localized URL.
+- German and French pages use metric-first inputs, locale number formatting,
+  localized calculator labels, validation, examples, explanations, and FAQ.
+- `lib/calculations.ts` remains the formula and validation authority.
+- Unknown locales and unsupported path mappings fail closed.
 
-## Future public URL contract
+No browser-language redirect is introduced. Privacy, Terms, Methodology, and
+About remain English and are linked with explicit English labeling where
+needed. They are not declared localized equivalents.
 
-When a target locale passes the release gate:
+## Release gate
 
-- keep English at `/...`;
-- place each non-default locale under a lowercase language subdirectory such as
-  `/<locale>/...`;
-- use one stable localized slug per task, based on native query wording rather
-  than word-for-word English translation;
-- do not use query parameters for locale selection;
-- do not force redirects from `Accept-Language`; offer an explicit language
-  switcher and remember preference locally if needed;
-- give every localized page the correct HTML `lang`, localized units, number
-  and date formats, examples, navigation, calculator labels/errors, sources,
-  privacy/terms, and reachable support wording;
-- emit a self-canonical plus reciprocal hreflang for every equivalent page and
-  one deliberate `x-default`; include only crawlable, equivalent pages in the
-  sitemap;
-- never point an incomplete translation at the English canonical or publish a
-  translated shell around English body content.
+Before production promotion:
 
-The old `/zh/index.html` URL appears only as a historical Google crawl sample.
-It currently returns 404 and provides no query, click, backlink, or task
-evidence. Do not recreate or redirect it until the destructive URL evidence
-gate is met.
+1. Native or professionally competent review approves German and French
+   terminology, grammar, examples, validation, legal/support wording, and
+   supplier assumptions.
+2. A Vercel Preview passes route, canonical-host, metadata, hreflang, sitemap,
+   JavaScript, keyboard, desktop, 390 px, and 320 px checks.
+3. The branch passes all repository and generic release audits with no secrets
+   or unrelated generated files.
+4. The user explicitly authorizes merge and production deployment.
 
-## Target-locale evidence gate
+After an authorized release, inspect crawl and rendering on Day 2, provider
+coverage and errors on Day 7, and query/page/country/device plus calculator-use
+outcomes on Day 28. Expand, revise, or remove the cohort from observed evidence.
 
-Select the first language only when all of the following are recorded:
+## Deferred locales
 
-1. At least 28 days, preferably 90 days, of Google and Bing query/page/country/
-   device evidence with export time and filters.
-2. A distinct target-language query vocabulary and task map, corroborated by a
-   locale-specific live SERP rather than translation convenience.
-3. Native-quality translation and review ownership for the calculator,
-   validation messages, examples, sources, trust pages, and future updates.
-4. A small complete page cohort with crawlable HTML, correct units/formats,
-   internal links, self-canonicals, reciprocal hreflang, `x-default`, and
-   sitemap parity.
-5. Production events and privacy rules that distinguish locale without sending
-   calculator inputs or query strings.
+Spanish, Portuguese, Italian, Dutch, and Polish are intentionally absent. The
+research record explains the current evidence and uncertainty. Do not add a
+locale code, route, hreflang alternate, or sitemap URL until a complete native
+page cohort has an owner and release brief.
 
-## Next implementation milestone after locale approval
-
-Use a route architecture that can render a correct server-side `<html lang>`
-for both the unprefixed English tree and prefixed locale trees without turning
-the calculators into client-only pages. A multiple-root-layout or equivalent
-build-time route design must be previewed before changing the current root
-layout. Reuse the calculation layer; translate UI/content, not formulas.
-
-Start with one complete cohort, verify desktop/mobile/keyboard behavior and
-metadata, then observe Day 2/7/28 crawl, index, query, page, and task outcomes.
-Rollback is removal of the unreleased locale registry entry and locale routes;
-existing English URLs remain unchanged.
+Rollback is a revert of the pilot commit or deployment rollback. Existing
+English paths and canonicals do not move.

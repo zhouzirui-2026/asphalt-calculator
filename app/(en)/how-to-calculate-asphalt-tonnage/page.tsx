@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../lib/seo";
-import { AsphaltEstimator } from "../_components/AsphaltEstimator";
-import { FaqSection, type FaqItem } from "../_components/FaqSection";
-import { SiteShell } from "../_components/SiteShell";
+import { SOCIAL_IMAGE, TWITTER_IMAGE } from "../../../lib/seo";
+import { AsphaltEstimator } from "../../_components/AsphaltEstimator";
+import { FaqSection, type FaqItem } from "../../_components/FaqSection";
+import { SiteShell } from "../../_components/SiteShell";
 
 export const metadata: Metadata = {
   title: "How to Calculate Asphalt Tonnage: Formula & Example",

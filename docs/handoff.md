@@ -4,50 +4,45 @@ Updated: 2026-08-24
 
 Branch: `agent/de-fr-locales`
 
-Baseline: `ddab044` on public `main`
+Worktree: `C:\web-new\workspaces\asphalt-calculator-de-fr`
 
-## Integrated prerequisite state
+Baseline: public `main` at `ddab044`; prerequisite commits integrated as
+`6a9b7d4` and `37ccd12`
 
-This task branch combines two completed, independently reviewed prerequisites:
+## Implemented release candidate
 
-- the task-led long-tail release, which adds `/asphalt-weight-calculator` and
-  `/how-to-calculate-asphalt-tonnage` without creating synonym-only tonnage,
-  blacktop, online, or driveway routes;
-- the internationalization-readiness release, which adds a fail-closed locale
-  registry, canonical URL helpers, HTML language/direction checks, typed SVG
-  favicon metadata, and production-like artifact auditing.
+This branch combines the reviewed English long-tail work with a two-page
+international pilot. It now has 11 business routes:
 
-The branch is an integration worktree for the German and French localization
-pilot. Production remains unchanged until a separately authorized release.
+- English: `/`, `/asphalt-calculator`,
+  `/asphalt-driveway-cost-calculator`, `/asphalt-weight-calculator`,
+  `/how-to-calculate-asphalt-tonnage`, `/methodology`, `/about`, `/privacy`,
+  and `/terms`;
+- German: `/de/asphalt-rechner`;
+- French: `/fr/calcul-enrobe`.
 
-## Current routes before locale implementation
+All business routes prerender. Calculations, validation, result formatting,
+sharing, and printing execute in the browser against pure functions from
+`lib/calculations.ts`. The product still has no account, database, payment,
+contact form, outbound email service, paid API, advertising, or private vendor
+runtime.
 
-- `/`
-- `/asphalt-calculator`
-- `/asphalt-driveway-cost-calculator`
-- `/asphalt-weight-calculator`
-- `/how-to-calculate-asphalt-tonnage`
-- `/methodology`
-- `/about`
-- `/privacy`
-- `/terms`
+The localized calculator is metric-first and includes native labels, errors,
+examples, explanations, FAQ, number formatting, navigation, and a mapped
+language switcher. Multiple root layouts make the server HTML language correct.
+Only the three true calculator equivalents emit reciprocal hreflang and
+sitemap alternates.
 
-Every route is prerendered. Calculator inputs, unit conversion, estimates,
-sharing, and printing run in the browser. The product has no accounts, remote
-database, payment, contact form, outbound email service, advertising, paid API,
-or private vendor dependency.
+## Evidence and decisions
 
-## Search and locale boundary
+- Keyword and SERP observations: `docs/international-keyword-research-2026-08-24.md`
+- German/French task contracts: `docs/localized-page-briefs.md`
+- Locale and release rules: `docs/internationalization-readiness.md`
+- Search-provider snapshot: `docs/search-status-2026-08-24.md`
+- English long-tail task map: `docs/long-tail-page-plan.md`
 
-The observed provider state is recorded in
-`docs/search-status-2026-08-24.md`. The locale evidence gate and URL contract are
-in `docs/internationalization-readiness.md`; the long-tail task map is in
-`docs/long-tail-page-plan.md`.
-
-`site-config.mjs` owns the site origin, route allowlist, default locale, locale
-direction, and canonical URL helpers. The sitemap generator and audits consume
-that same contract. Before this pilot is implemented, only `en` is registered
-and no hreflang is emitted.
+German and French are a reversible evidence-gathering pilot. Spanish,
+Portuguese, Italian, Dutch, and Polish remain deferred.
 
 ## Validation
 
@@ -64,22 +59,33 @@ npm audit
 git diff --check
 ```
 
-The repository audit verifies all allowlisted routes, metadata, canonicals,
-index policy, FAQ parity, sitemap and robots output, internal links, 404
-behavior, canonical-host redirect, security headers, locale markup, favicon
-type, public-file allowlist, and the deployable secret boundary. The generic
-artifact adapter remains a second independent inspection surface.
+At handoff time the final branch passed sync, lint, type checking, all 21 tests,
+production build, the 11-route repository audit, the generic rendered-artifact
+audit, `npm audit` with zero reported vulnerabilities, and `git diff --check`.
+Browser QA covered desktop, 390 px, and 320 px; calculation, invalid input,
+localized number/currency formatting, share state, reciprocal language links,
+HTML metadata, keyboard skip focus, horizontal overflow, page/console errors,
+and WCAG A/AA. Automated accessibility reported zero violations after the
+language-switcher contrast fix; gradient-backed result content still requires
+the recorded visual review because automated contrast could not determine its
+background.
+
+## Separate Naver task
+
+`agent/naver-verification` is isolated in
+`C:\web-new\workspaces\asphalt-calculator-naver-verify`. It adds the current
+Naver public meta proof and audit coverage. It must not be merged into this
+localization task. Verification and sitemap submission require a production
+deployment followed by an external Search Advisor action; production promotion
+has not been authorized by the localization request.
 
 ## Release and rollback
 
-1. Finish the German/French pilot and all local validation in this worktree.
-2. Review the complete branch diff against `origin/main`.
-3. Push and create a draft PR only when authorized.
-4. Verify a Vercel Preview at desktop, 390 px, and 320 px.
-5. Merge and promote only with separate explicit authorization.
-6. After an authorized release, run Day-2/7/28 locale query, crawl, index, and
-   task-completion reviews before expanding the language set.
+1. Review the final diff against `main` and obtain native-language approval.
+2. Push or open a draft PR only when authorized.
+3. Verify a Vercel Preview at desktop, 390 px, and 320 px.
+4. Merge and promote only with separate explicit authorization.
+5. Observe Day-2/7/28 locale outcomes before adding another language.
 
-Do not submit Search Console, Bing Webmaster Tools, IndexNow, directories,
-backlinks, DNS, or other external forms as part of this implementation.
-
+Rollback is a Git revert or Vercel rollback to the prior deployment. Existing
+English URLs and canonicals remain stable.

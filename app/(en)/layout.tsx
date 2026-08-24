@@ -3,9 +3,9 @@ import {
   DEFAULT_LOCALE,
   SITE_INDEXING_ENABLED,
   SITE_ORIGIN,
-} from "../site-config.mjs";
-import { GoogleAnalytics } from "./_components/GoogleAnalytics";
-import "./globals.css";
+} from "../../site-config.mjs";
+import { DocumentLayout } from "../_components/DocumentLayout";
+import "../globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
@@ -29,14 +29,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={DEFAULT_LOCALE.htmlLang} dir={DEFAULT_LOCALE.direction}>
-      <body>
-        {children}
-        <GoogleAnalytics
-          measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
-          productionOrigin={SITE_ORIGIN}
-        />
-      </body>
-    </html>
+    <DocumentLayout locale={DEFAULT_LOCALE}>{children}</DocumentLayout>
   );
 }

@@ -6,9 +6,11 @@ export interface FaqItem {
 export function FaqSection({
   items,
   heading = "Frequently asked questions",
+  eyebrow = "Questions, answered plainly",
 }: {
   items: readonly FaqItem[];
   heading?: string;
+  eyebrow?: string;
 }) {
   const structuredData = {
     "@context": "https://schema.org",
@@ -26,7 +28,7 @@ export function FaqSection({
   return (
     <section className="content-section faq-section" aria-labelledby="faq-heading">
       <div className="section-heading section-heading--compact">
-        <p className="eyebrow">Questions, answered plainly</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h2 id="faq-heading">{heading}</h2>
       </div>
       <div className="faq-list">

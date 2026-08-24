@@ -10,9 +10,38 @@ export const DEFAULT_LOCALE = Object.freeze({
   htmlLang: "en",
   direction: "ltr",
   pathPrefix: "",
+  label: "English",
 });
 
-export const LOCALES = Object.freeze([DEFAULT_LOCALE]);
+export const GERMAN_LOCALE = Object.freeze({
+  code: "de",
+  htmlLang: "de",
+  direction: "ltr",
+  pathPrefix: "/de",
+  label: "Deutsch",
+});
+
+export const FRENCH_LOCALE = Object.freeze({
+  code: "fr",
+  htmlLang: "fr",
+  direction: "ltr",
+  pathPrefix: "/fr",
+  label: "Français",
+});
+
+export const LOCALES = Object.freeze([
+  DEFAULT_LOCALE,
+  GERMAN_LOCALE,
+  FRENCH_LOCALE,
+]);
+
+export const PAGE_ALTERNATES = Object.freeze({
+  materialCalculator: Object.freeze({
+    en: "/asphalt-calculator",
+    de: "/de/asphalt-rechner",
+    fr: "/fr/calcul-enrobe",
+  }),
+});
 
 export function localeForCode(code) {
   const locale = LOCALES.find((candidate) => candidate.code === code);
@@ -27,12 +56,36 @@ export function localizedPath(path, localeCode = DEFAULT_LOCALE.code) {
 
   const locale = localeForCode(localeCode);
   if (!locale.pathPrefix) return path;
-  return path === "/" ? `${locale.pathPrefix}/` : `${locale.pathPrefix}${path}`;
+  const group = Object.values(PAGE_ALTERNATES)
+    .find((candidate) => candidate[DEFAULT_LOCALE.code] === path);
+  const localized = group?.[locale.code];
+  if (!localized) {
+    throw new Error(`No launch-ready ${locale.code} equivalent for: ${path}`);
+  }
+  return localized;
 }
 
 export function localizedUrl(path, localeCode = DEFAULT_LOCALE.code) {
   const localized = localizedPath(path, localeCode);
   return localized === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${localized}`;
+}
+
+export function canonicalUrl(path) {
+  if (!/^\/(?!\/)/.test(path) || /[?#]/.test(path)) {
+    throw new Error(`Expected a canonical root-relative path, received: ${path}`);
+  }
+  return path === "/" ? SITE_ORIGIN : `${SITE_ORIGIN}${path}`;
+}
+
+export function languageAlternates(groupName) {
+  const group = PAGE_ALTERNATES[groupName];
+  if (!group) throw new Error(`Unknown alternate group: ${groupName}`);
+  return Object.freeze({
+    ...Object.fromEntries(
+      LOCALES.map((locale) => [locale.code, canonicalUrl(group[locale.code])]),
+    ),
+    "x-default": canonicalUrl(group[DEFAULT_LOCALE.code]),
+  });
 }
 
 // Enabled only after the custom domain, HTTPS, canonical host, production
@@ -41,15 +94,17 @@ export function localizedUrl(path, localeCode = DEFAULT_LOCALE.code) {
 export const SITE_INDEXING_ENABLED = true;
 
 export const ROUTES = [
-  { path: "/", indexableAtLaunch: true, changefreq: "monthly", priority: "1.0" },
-  { path: "/asphalt-calculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.9" },
-  { path: "/asphalt-driveway-cost-calculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.9" },
-  { path: "/asphalt-weight-calculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.8" },
-  { path: "/how-to-calculate-asphalt-tonnage", indexableAtLaunch: true, changefreq: "yearly", priority: "0.7" },
-  { path: "/methodology", indexableAtLaunch: true, changefreq: "yearly", priority: "0.6" },
-  { path: "/about", indexableAtLaunch: true, changefreq: "yearly", priority: "0.5" },
-  { path: "/privacy", indexableAtLaunch: false, changefreq: "yearly", priority: "0.2" },
-  { path: "/terms", indexableAtLaunch: false, changefreq: "yearly", priority: "0.2" },
+  { path: "/", localeCode: "en", indexableAtLaunch: true, changefreq: "monthly", priority: "1.0" },
+  { path: "/asphalt-calculator", localeCode: "en", alternateGroup: "materialCalculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.9" },
+  { path: "/asphalt-driveway-cost-calculator", localeCode: "en", indexableAtLaunch: true, changefreq: "monthly", priority: "0.9" },
+  { path: "/asphalt-weight-calculator", localeCode: "en", indexableAtLaunch: true, changefreq: "monthly", priority: "0.8" },
+  { path: "/how-to-calculate-asphalt-tonnage", localeCode: "en", indexableAtLaunch: true, changefreq: "yearly", priority: "0.7" },
+  { path: "/methodology", localeCode: "en", indexableAtLaunch: true, changefreq: "yearly", priority: "0.6" },
+  { path: "/about", localeCode: "en", indexableAtLaunch: true, changefreq: "yearly", priority: "0.5" },
+  { path: "/privacy", localeCode: "en", indexableAtLaunch: false, changefreq: "yearly", priority: "0.2" },
+  { path: "/terms", localeCode: "en", indexableAtLaunch: false, changefreq: "yearly", priority: "0.2" },
+  { path: "/de/asphalt-rechner", localeCode: "de", alternateGroup: "materialCalculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.8" },
+  { path: "/fr/calcul-enrobe", localeCode: "fr", alternateGroup: "materialCalculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.8" },
 ];
 
 export const PUBLIC_FILE_ALLOWLIST = [
