@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "font-src 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://www.scrolllaunch.com https://launchstreak.dev https://easylaunch.dev",
+  "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://www.scrolllaunch.com https://launchstreak.dev https://easylaunch.dev https://www.easylaunch.dev",
   "object-src 'none'",
   "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com",
   "style-src 'self' 'unsafe-inline'",
