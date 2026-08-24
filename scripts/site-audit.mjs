@@ -267,6 +267,17 @@ try {
     assert.equal(metaContent(html, "twitter:image"), `${SITE_ORIGIN}/og.png`, `${path} twitter:image mismatch`);
     assert.doesNotMatch(html, /googletagmanager\.com\/gtag/i, `${path} must not server-render the client-only Google Analytics tag`);
     assert.match(html, /href=["']mailto:support@asphalt-calculator\.top["']/i, `${path} needs the monitored support alias in the shared footer`);
+    if (path === "/") {
+      const directoryBadges = [
+        ["https://www.scrolllaunch.com/products/ac-asphalt-calculator?utm_source=badge&amp;utm_medium=embed&amp;utm_campaign=ac-asphalt-calculator&amp;ref=scrolllaunch", "https://www.scrolllaunch.com/api/badge/ac-asphalt-calculator"],
+        ["https://launchstreak.dev/productivity/asphalt-project-planning-without-hidden-assumptions", "https://launchstreak.dev/badge/launch-streak-badge-light.svg"],
+        ["https://easylaunch.dev/productivity/asphalt-project-planning-without-hidden-assumptions", "https://easylaunch.dev/badge/easylaunch-badge-light.svg"],
+      ];
+      for (const [href, src] of directoryBadges) {
+        assert.equal(html.split(`href="${href}"`).length - 1, 1, `${path} needs exactly one badge link to ${href}`);
+        assert.ok(html.includes(`src="${src}"`), `${path} needs the badge image ${src}`);
+      }
+    }
     assert.ok(!titles.has(title), `${path} title duplicates another route`);
     assert.ok(!descriptions.has(description), `${path} description duplicates another route`);
     assert.ok(!h1s.has(h1[0]), `${path} H1 duplicates another route`);
