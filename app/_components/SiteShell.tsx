@@ -25,9 +25,7 @@ export function SiteShell({
             <span>Asphalt Calculator</span>
           </Link>
           <div className="site-header__controls">
-            {currentPath === "/asphalt-calculator" ? (
-              <LanguageSwitcher currentLocale="en" />
-            ) : null}
+            <LanguageSwitcher currentLocale="en" currentPath={currentPath} />
             <nav aria-label="Primary navigation">
               <ul className="nav-list">
                 {navigation.map(([href, label]) => (

@@ -16,7 +16,13 @@ const switcherCopy = {
   fr: { label: "Choisir la langue", prompt: "Langue" },
 } as const;
 
-export function LanguageSwitcher({ currentLocale }: { currentLocale: keyof typeof labels }) {
+export function LanguageSwitcher({
+  currentLocale,
+  currentPath,
+}: {
+  currentLocale: keyof typeof labels;
+  currentPath: string;
+}) {
   const copy = switcherCopy[currentLocale];
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -45,7 +51,7 @@ export function LanguageSwitcher({ currentLocale }: { currentLocale: keyof typeo
               href={href}
               hrefLang={locale}
               lang={locale}
-              aria-current={currentLocale === locale ? "page" : undefined}
+              aria-current={currentPath === href ? "page" : undefined}
             >
               <span>{labels[locale as keyof typeof labels]}</span>
               <span className="language-switcher__code" aria-hidden="true">
