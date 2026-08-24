@@ -230,6 +230,29 @@ try {
   assert.equal(palletLinks.length, 1, "Homepage must contain exactly one crawlable Pallet Calculator link");
   assert.match(homeHtml, /Another tool we maintain/i, "Owned-site relationship must be visible beside the reciprocal link");
 
+  for (const synonymOnlyRoute of [
+    "/asphalt-tonnage-calculator",
+    "/blacktop-calculator",
+    "/asphalt-calculator-online",
+    "/asphalt-driveway-calculator",
+  ]) {
+    assert.ok(!routePaths.includes(synonymOnlyRoute), `${synonymOnlyRoute} must not become a synonym-only route`);
+  }
+
+  const materialHtml = pages.get("/asphalt-calculator");
+  assert.ok(materialHtml, "Material calculator HTML must be available");
+  assert.match(materialHtml, /Asphalt tonnage and blacktop use the same workflow/i, "Material page must explain its synonym boundary");
+
+  const weightHtml = pages.get("/asphalt-weight-calculator");
+  assert.ok(weightHtml, "Weight calculator HTML must be available");
+  assert.match(weightHtml, /id=["']weight-volume["']/i, "Weight calculator must render its volume input");
+  assert.match(weightHtml, /Volume and density must describe the same state/i, "Weight page must disclose the matching-condition boundary");
+
+  const tonnageGuideHtml = pages.get("/how-to-calculate-asphalt-tonnage");
+  assert.ok(tonnageGuideHtml, "Tonnage guide HTML must be available");
+  assert.match(tonnageGuideHtml, /US short tons = area ft/i, "Tonnage guide must render the answer-first formula");
+  assert.match(tonnageGuideHtml, /Calculate asphalt tons in five steps/i, "Tonnage guide must render the visible method");
+
   const privacyHtml = pages.get("/privacy");
   assert.ok(privacyHtml, "Privacy HTML must be available for support-email audit");
   assert.match(privacyHtml, /Cloudflare Email Routing/i, "Privacy policy must disclose the inbound email processor");

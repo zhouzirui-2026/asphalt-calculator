@@ -1,0 +1,65 @@
+{
+  "siteOrigin": "https://asphalt-calculator.top",
+  "publicRoot": "dist",
+  "artifactRoot": "dist",
+  "sitemapPath": "sitemap.xml",
+  "robotsPath": "robots.txt",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "requireOgUrl": true,
+  "requireCanonicalInSitemap": false,
+  "requireTwitterCard": true,
+  "entryPaths": ["/"],
+  "routeAllowlist": [
+    "/",
+    "/about",
+    "/asphalt-calculator",
+    "/asphalt-driveway-cost-calculator",
+    "/asphalt-weight-calculator",
+    "/how-to-calculate-asphalt-tonnage",
+    "/methodology",
+    "/privacy",
+    "/terms"
+  ],
+  "publicFileAllowlist": [],
+  "title": { "min": 10, "max": 60 },
+  "description": { "min": 50, "max": 160 },
+  "body": { "minVisibleCharacters": 200, "max": 1000000 },
+  "crawl": { "maxDepth": 3, "orphanExemptions": [] },
+  "faq": { "minItems": 1, "maxItems": 8, "exactVisibleMatch": false },
+  "requiredScripts": [],
+  "requiredFiles": [
+    "index.html",
+    "favicon.svg",
+    "og.png",
+    "robots.txt",
+    "sitemap.xml"
+  ],
+  "verificationFilePatterns": [
+    "^[a-f0-9]{64}\\.txt$",
+    "^(?:baidu|bing|google|yandex|naver)[-_].*\\.html$"
+  ],
+  "ignoredDirectories": ["_next"],
+  "forbiddenHtmlPatterns": [
+    {
+      "name": "direct-ad-loader",
+      "pattern": "pagead2\\.googlesyndication\\.com/pagead/js/adsbygoogle\\.js"
+    },
+    {
+      "name": "calculator-query-in-page-location",
+      "pattern": "page_location[^<]{0,200}(?:location\\.href|location\\.search)"
+    }
+  ],
+  "forbiddenArtifactPaths": [
+    ".env",
+    ".env.local",
+    ".git",
+    ".vercel",
+    "AGENTS.md",
+    "docs",
+    "node_modules",
+    "package.json"
+  ],
+  "secretPatterns": [],
+  "redirectAliases": {}
+}

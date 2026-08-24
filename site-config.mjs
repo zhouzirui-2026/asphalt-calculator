@@ -9,6 +9,8 @@ export const ROUTES = [
   { path: "/", indexableAtLaunch: true, changefreq: "monthly", priority: "1.0" },
   { path: "/asphalt-calculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.9" },
   { path: "/asphalt-driveway-cost-calculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.9" },
+  { path: "/asphalt-weight-calculator", indexableAtLaunch: true, changefreq: "monthly", priority: "0.8" },
+  { path: "/how-to-calculate-asphalt-tonnage", indexableAtLaunch: true, changefreq: "yearly", priority: "0.7" },
   { path: "/methodology", indexableAtLaunch: true, changefreq: "yearly", priority: "0.6" },
   { path: "/about", indexableAtLaunch: true, changefreq: "yearly", priority: "0.5" },
   { path: "/privacy", indexableAtLaunch: false, changefreq: "yearly", priority: "0.2" },

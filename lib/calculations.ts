@@ -11,6 +11,7 @@ export const KG_PER_METRIC_TONNE = 1000;
 export const SHORT_TONS_PER_METRIC_TONNE = 1.1023113109243878;
 export const CUBIC_FT_PER_CUBIC_M = 35.31466672148859;
 export const CUBIC_FT_PER_CUBIC_YD = 27;
+export const CUBIC_M_PER_CUBIC_YD = CUBIC_FT_PER_CUBIC_YD / CUBIC_FT_PER_CUBIC_M;
 export const DEFAULT_DENSITY_LB_FT3 = 145;
 
 const DECIMAL_INPUT_PATTERN = /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/;
@@ -71,6 +72,26 @@ export interface DrivewayCostResult {
   costPerArea: number;
 }
 
+export interface AsphaltWeightInput {
+  unitSystem: UnitSystem;
+  volume: number;
+  density: number;
+}
+
+export interface AsphaltWeightResult {
+  volumeCubicFt: number;
+  volumeCubicYd: number;
+  volumeCubicM: number;
+  densityLbFt3: number;
+  densityKgM3: number;
+  weightLb: number;
+  weightKg: number;
+  shortTons: number;
+  metricTonnes: number;
+  shortTonsPerCubicYd: number;
+  metricTonnesPerCubicM: number;
+}
+
 export type ValidationErrors = Record<string, string>;
 
 function isFiniteNumber(value: number) {
@@ -96,6 +117,71 @@ function densityInLbPerCubicFoot(input: MaterialInput) {
   return input.unitSystem === "us"
     ? input.density
     : input.density / KG_M3_PER_LB_FT3;
+}
+
+function asphaltWeightDensityInLbPerCubicFoot(input: AsphaltWeightInput) {
+  return input.unitSystem === "us"
+    ? input.density
+    : input.density / KG_M3_PER_LB_FT3;
+}
+
+function asphaltWeightVolumeInCubicFeet(input: AsphaltWeightInput) {
+  return input.unitSystem === "us"
+    ? input.volume * CUBIC_FT_PER_CUBIC_YD
+    : input.volume * CUBIC_FT_PER_CUBIC_M;
+}
+
+export function validateAsphaltWeightInput(input: AsphaltWeightInput): ValidationErrors {
+  const errors: ValidationErrors = {};
+  const volumeCubicFt = asphaltWeightVolumeInCubicFeet(input);
+  const densityLbFt3 = asphaltWeightDensityInLbPerCubicFoot(input);
+
+  if (!isFiniteNumber(input.volume) || input.volume <= 0) {
+    errors.volume = input.unitSystem === "us"
+      ? "Enter a volume greater than 0 cubic yards."
+      : "Enter a volume greater than 0 cubic meters.";
+  } else if (!isFiniteNumber(volumeCubicFt)) {
+    errors.volume = "Volume is too large to calculate.";
+  } else if (volumeCubicFt > 270_000_000) {
+    errors.volume = "Volume must not exceed 10,000,000 cubic yards (7,645,549 m³).";
+  }
+
+  if (!isFiniteNumber(input.density) || densityLbFt3 < 50 || densityLbFt3 > 250) {
+    errors.density = "Use a density from 50 to 250 lb/ft³ (801 to 4,005 kg/m³).";
+  }
+
+  return errors;
+}
+
+export function calculateAsphaltWeight(input: AsphaltWeightInput): AsphaltWeightResult {
+  const errors = validateAsphaltWeightInput(input);
+  if (Object.keys(errors).length > 0) {
+    throw new RangeError(Object.values(errors)[0]);
+  }
+
+  const volumeCubicFt = asphaltWeightVolumeInCubicFeet(input);
+  const volumeCubicYd = volumeCubicFt / CUBIC_FT_PER_CUBIC_YD;
+  const volumeCubicM = volumeCubicFt / CUBIC_FT_PER_CUBIC_M;
+  const densityLbFt3 = asphaltWeightDensityInLbPerCubicFoot(input);
+  const densityKgM3 = densityLbFt3 * KG_M3_PER_LB_FT3;
+  const weightLb = volumeCubicFt * densityLbFt3;
+  const weightKg = weightLb / LB_PER_KG;
+  const shortTons = weightLb / LB_PER_SHORT_TON;
+  const metricTonnes = weightKg / KG_PER_METRIC_TONNE;
+
+  return {
+    volumeCubicFt,
+    volumeCubicYd,
+    volumeCubicM,
+    densityLbFt3,
+    densityKgM3,
+    weightLb,
+    weightKg,
+    shortTons,
+    metricTonnes,
+    shortTonsPerCubicYd: densityLbFt3 * CUBIC_FT_PER_CUBIC_YD / LB_PER_SHORT_TON,
+    metricTonnesPerCubicM: densityKgM3 / KG_PER_METRIC_TONNE,
+  };
 }
 
 export function validateMaterialInput(input: MaterialInput): ValidationErrors {

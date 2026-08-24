@@ -2,9 +2,11 @@
 
 Date: 2026-08-20
 
+Updated: 2026-08-24
+
 Owner: Asphalt Calculator Editorial Team
 
-Status: GitHub and Vercel launch candidate
+Status: Production architecture with a reviewed long-tail task candidate
 
 ## Product boundary
 
@@ -66,7 +68,9 @@ the first release has no product need that justifies the extra boundary.
 | --- | --- | --- | --- |
 | `/` | Choose a workflow | Site overview; not a duplicate calculator | Index |
 | `/asphalt-calculator` | Estimate volume, weight, tonnage, waste, and optional material cost | `asphalt calculator`, `asphalt tonnage calculator`, `blacktop calculator` | Index |
-| `/asphalt-driveway-cost-calculator` | Combine material with user-entered preparation, paving, delivery, and other allowances | `asphalt driveway cost calculator`, `asphalt cost per square foot` | Index |
+| `/asphalt-driveway-cost-calculator` | Combine driveway material with user-entered preparation, paving, delivery, and other allowances | `asphalt driveway cost calculator`, `asphalt driveway calculator`, `asphalt cost per square foot` | Index |
+| `/asphalt-weight-calculator` | Convert known compacted volume to mass, tonnage, and unit weight | `weight of asphalt`, `unit weight of asphalt`, asphalt cubic yards to tons | Index |
+| `/how-to-calculate-asphalt-tonnage` | Learn and reproduce the area × thickness × density method with worked examples | `how to calculate asphalt tonnage` and equivalent question forms | Index |
 | `/methodology` | Audit formulas, defaults, sources, rounding, and limits | Supporting trust document | Index |
 | `/about` | Understand authorship, scope, and corrections policy | Supporting trust document | Index |
 | `/privacy` | Understand local processing and data practices | Legal/support | Noindex |
@@ -97,9 +101,17 @@ The driveway workflow adds only user-entered area rates and fixed allowances.
 It does not infer labor, equipment, taxes, permits, minimum orders, site
 conditions, or a national price.
 
+The known-volume workflow starts from compacted cubic yards or cubic meters,
+multiplies by editable compacted density, and returns pounds, kilograms, short
+tons, metric tonnes, and unit weight in both systems. It does not add an order
+allowance, infer a mix, or select pavement thickness. The tonnage guide reuses
+the material calculator and adds a distinct educational task; it does not own a
+second formula implementation. The evidence and rejected synonym routes are in
+`docs/long-tail-page-plan.md`.
+
 ## Rollback
 
-The starter-only baseline is commit `7b72f7e`; the reviewed local product is
-commit `2a52067`. Launch changes are isolated on `agent/launch-asphalt-top`.
-Vercel rollback uses the previous production deployment; Git rollback uses the
-previous commit. No other workspace or vendor repository needs to change.
+The long-tail expansion starts from production `main` commit `ddab044` and is
+isolated on `agent/long-tail-workflows`. Vercel rollback uses the previous
+production deployment; Git rollback reverts the task commit. No existing route,
+redirect, canonical, DNS record, or vendor repository needs to change.

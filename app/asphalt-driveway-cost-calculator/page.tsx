@@ -8,7 +8,7 @@ import { SiteShell } from "../_components/SiteShell";
 export const metadata: Metadata = {
   title: "Asphalt Driveway Cost Calculator",
   description:
-    "Build an asphalt driveway planning cost from your local material, preparation, paving, delivery, and other inputs. No unsupported national price.",
+    "Use an asphalt driveway calculator for material and planning cost from local preparation, paving, delivery, and other inputs. No national price.",
   alternates: { canonical: "/asphalt-driveway-cost-calculator" },
   openGraph: {
     type: "website",
@@ -48,6 +48,10 @@ const faqs: readonly FaqItem[] = [
     question: "Why can I see a cost per square foot or square meter?",
     answer: "The calculator divides the combined allowance by the paved area you entered. That output describes only your selected inputs and is not a published market rate.",
   },
+  {
+    question: "What if I only need asphalt quantity for a driveway?",
+    answer: "Leave all cost inputs at zero or use the main asphalt calculator for a material-only result. Both workflows keep area, compacted thickness, density, and any allowance visible.",
+  },
 ];
 
 export default function AsphaltDrivewayCostPage() {
@@ -61,9 +65,10 @@ export default function AsphaltDrivewayCostPage() {
           <p className="eyebrow">Cost workflow</p>
           <h1>Asphalt Driveway Cost Calculator</h1>
           <p className="tool-intro__lede">
-            Build a planning allowance from your current local inputs. Material
-            and contractor scope stay separate, and every cost field starts at
-            zero until you provide a value.
+            Use this asphalt driveway calculator to estimate material and build
+            a planning allowance from current local inputs. Material and
+            contractor scope stay separate, and every cost field starts at zero
+            until you provide a value.
           </p>
           <div className="scope-callout">
             <strong>This is not a contractor quote.</strong>

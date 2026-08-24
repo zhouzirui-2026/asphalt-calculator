@@ -15,6 +15,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit",
     "audit:site": "node scripts/site-audit.mjs",
+    "audit:artifact:render": "node scripts/render-audit-artifact.mjs",
     "check": "npm run sync:site:check && npm run lint && npm run typecheck",
     "search:indexnow:self-test": "node scripts/submit-indexnow.mjs --self-test",
     "search:indexnow:dry-run": "node scripts/submit-indexnow.mjs --config search-project.json --bootstrap"
