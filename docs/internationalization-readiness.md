@@ -32,8 +32,10 @@ a small, reversible experiment—not as evidence for broad translation.
   and `x-default` alternates. English-only pages emit no hreflang.
 - The sitemap uses the same route and alternate map and includes `xhtml:link`
   parity for the equivalent cohort.
-- The language switcher maps only real equivalents; it never guesses a
-  localized URL.
+- Every site page, including English-only and not-found pages, exposes the
+  language switcher in the global header. Its destinations are the three real
+  calculator equivalents; it never guesses a localized URL or marks a
+  destination as the current page unless the URL matches exactly.
 - German and French pages use metric-first inputs, locale number formatting,
   localized calculator labels, validation, examples, explanations, and FAQ.
 - `lib/calculations.ts` remains the formula and validation authority.

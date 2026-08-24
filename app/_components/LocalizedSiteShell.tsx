@@ -53,7 +53,7 @@ export function LocalizedSiteShell({
             <span>Asphalt Calculator</span>
           </Link>
           <div className="site-header__controls">
-            <LanguageSwitcher currentLocale={locale} />
+            <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
             <nav aria-label={copy.primaryNavigation}>
               <ul className="nav-list">
                 <li><Link aria-current="page" href={currentPath}>{copy.calculator}</Link></li>
