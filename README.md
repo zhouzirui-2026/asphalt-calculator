@@ -40,9 +40,10 @@ npm run dev
 
 The local URL is normally `http://localhost:3000`.
 
-The production build uses native Next.js, but every product route is statically
-prerendered. No application API, database, account system, or Vercel Function is
-required for normal requests.
+The production build uses native Next.js and every product route is statically
+prerendered. A request proxy redirects only the production Vercel alias to the
+canonical domain while retaining its path and query. Calculator processing stays
+in the browser; no application API, database, or account system is introduced.
 
 ## Analytics configuration
 

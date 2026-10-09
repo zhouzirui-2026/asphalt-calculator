@@ -27,6 +27,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Preserve the incoming alias path/query before applying canonical routing.
+  skipTrailingSlashRedirect: true,
+  skipProxyUrlNormalize: true,
   experimental: {
     globalNotFound: true,
   },

@@ -21,7 +21,7 @@
     "search:indexnow:dry-run": "node scripts/submit-indexnow.mjs --config search-project.json --bootstrap"
   },
   "dependencies": {
-    "next": "^16.3.1",
+    "next": "16.3.8",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -36,10 +36,14 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
+    "fast-glob": "file:scripts/next-lint-glob",
     "globals": "16.4.0",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.59.3"
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "fast-glob": "$fast-glob"
+  }
 }
