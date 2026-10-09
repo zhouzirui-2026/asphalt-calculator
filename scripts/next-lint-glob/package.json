@@ -1,0 +1,14 @@
+{
+  "name": "@asphalt/next-lint-glob",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Directory glob adapter for the Next ESLint root-directory resolver",
+  "main": "index.mjs",
+  "type": "module",
+  "dependencies": {
+    "glob": "13.0.6"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}
