@@ -21,7 +21,7 @@
     "search:indexnow:dry-run": "node scripts/submit-indexnow.mjs --config search-project.json --bootstrap"
   },
   "dependencies": {
-    "next": "^16.3.1",
+    "next": "16.3.8",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
