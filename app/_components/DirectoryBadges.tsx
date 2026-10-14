@@ -39,6 +39,20 @@ export function DirectoryBadges() {
           />
         </a>
       ))}
+      <a
+        id="everlist-badge"
+        className="everlist-badge"
+        href="https://everlist.dev/tools/asphalt-calculator"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Listed on EverList"
+      >
+        <span className="everlist-badge__mark" aria-hidden="true">E</span>
+        <span className="everlist-badge__text">
+          <span className="everlist-badge__caption">Listed on</span>
+          <span className="everlist-badge__name">Ever<span>List</span></span>
+        </span>
+      </a>
     </div>
   );
 }
